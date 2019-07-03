@@ -1,12 +1,12 @@
 {
   "scripts": {
-    "build": "cargo build --manifest-path=package/Cargo.toml",
-    "check": "cargo check --manifest-path=package/Cargo.toml",
-    "clean": "cargo clean --manifest-path=package/Cargo.toml",
+    "build": "cargo build",
+    "check": "cargo check",
+    "clean": "cargo clean",
     "cm": "git-cz",
-    "format": "cd package && cargo fmt && cd ..",
-    "lint": "cargo clippy --manifest-path=package/Cargo.toml -- -D warnings",
-    "test": "cargo test --manifest-path=package/Cargo.toml"
+    "format": "cargo fmt",
+    "lint": "cargo clippy -- -D warnings",
+    "test": "cargo test"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.0.0",
