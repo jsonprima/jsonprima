@@ -1,0 +1,10 @@
+{
+  "editor.fontFamily": "Fira Code, Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontWeight": "400",
+  "editor.fontSize": 15,
+  "editor.cursorSmoothCaretAnimation": false,
+  "editor.dragAndDrop": false,
+  "editor.minimap.enabled": false,
+  "editor.rulers": [90]
+}
