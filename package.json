@@ -1,13 +1,20 @@
 {
   "scripts": {
-    "cm": "git-cz"
+    "build": "cargo build --manifest-path=package/Cargo.toml",
+    "check": "cargo check --manifest-path=package/Cargo.toml",
+    "clean": "cargo clean --manifest-path=package/Cargo.toml",
+    "cm": "git-cz",
+    "format": "cd package && cargo fmt && cd ..",
+    "lint": "cargo clippy --manifest-path=package/Cargo.toml -- -D warnings",
+    "test": "cargo test --manifest-path=package/Cargo.toml"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.0.0",
     "@commitlint/config-conventional": "^8.0.0",
     "commitizen": "^3.1.1",
     "cz-conventional-changelog": "^2.1.0",
-    "husky": "^3.0.0"
+    "husky": "^3.0.0",
+    "lint-staged": "^9.0.2"
   },
   "config": {
     "commitizen": {
@@ -16,7 +23,14 @@
   },
   "husky": {
     "hooks": {
+      "pre-commit": "lint-staged && npm run check && npm run lint && npm run test",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }  
+    }
+  },
+  "lint-staged": {
+    "*.{rs}": [
+      "npm run format",
+      "git add"
+    ]
   }
 }
