@@ -14,12 +14,15 @@ before_install:
 
 install:
   - rustup component add clippy
+  - rustup component add rustfmt
 
 jobs:
   include:
     - stage: Tests
       name: Lint
-      script: npm run lint
+      script: 
+        - npm run format -- --all -- --check
+        - npm run lint
     - script: npm run check
       name: Compile
     - script: npm run test
