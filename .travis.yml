@@ -12,13 +12,12 @@ before_install:
     node -v
     npm -v
 
-install:
-  - rustup component add clippy
-  - rustup component add rustfmt
-
 jobs:
   include:
     - stage: Test
+      install:
+        - rustup component add clippy
+        - rustup component add rustfmt
       script:
         - npm run format -- --all -- --check
         - npm run lint
