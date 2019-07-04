@@ -19,6 +19,6 @@ jobs:
         - rustup component add clippy
         - rustup component add rustfmt
       script:
-        - npm run format -- --all -- --check
+        - npm run format --all -- --check
         - npm run lint
         - npm run test
