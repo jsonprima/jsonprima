@@ -4,14 +4,16 @@ dist: trusty
 rust:
   - stable
 
-install:
-  - rustup component add clippy
+before_install:
   - |
     source $HOME/.nvm/nvm.sh  
     nvm install stable
     nvm use stable
     node -v
     npm -v
+
+install:
+  - rustup component add clippy
 
 script:
   - npm run check
