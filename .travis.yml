@@ -1,0 +1,24 @@
+language: rust
+dist: trusty
+
+rust:
+  - stable
+
+before_install:
+  - |
+    source $HOME/.nvm/nvm.sh  
+    nvm install stable
+    nvm use stable
+    node -v
+    npm -v
+
+jobs:
+  include:
+    - stage: Test
+      install:
+        - rustup component add clippy
+        - rustup component add rustfmt
+      script:
+        - npm run format -- --all -- --check
+        - npm run lint
+        - npm run test
