@@ -15,7 +15,11 @@ before_install:
 install:
   - rustup component add clippy
 
-script:
-  - npm run check
-  - npm run lint
-  - npm run test
+jobs:
+  include:
+    - stage: Lint
+      script: npm run lint
+    - stage: Compile
+      script: npm run check
+    - stage: Test
+      script: npm run test
