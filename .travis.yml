@@ -18,10 +18,8 @@ install:
 
 jobs:
   include:
-    - stage: Tests
-      name: Lint
+    - stage: Test
       script:
         - npm run format -- --all -- --check
         - npm run lint
-    - script: npm run test
-      name: Test
+        - npm run test
