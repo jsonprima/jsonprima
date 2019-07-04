@@ -20,10 +20,8 @@ jobs:
   include:
     - stage: Tests
       name: Lint
-      script: 
+      script:
         - npm run format -- --all -- --check
         - npm run lint
-    - script: npm run check
-      name: Compile
     - script: npm run test
       name: Test
