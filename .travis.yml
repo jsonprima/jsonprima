@@ -1,0 +1,19 @@
+language: rust
+dist: trusty
+
+rust:
+  - stable
+
+install:
+  - rustup component add clippy
+  - |
+    source $HOME/.nvm/nvm.sh  
+    nvm install stable
+    nvm use stable
+    node -v
+    npm -v
+
+script:
+  - npm run check
+  - npm run lint
+  - npm run test
