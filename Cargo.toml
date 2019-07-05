@@ -1,21 +1,30 @@
 [package]
 name = "jsonprima"
 version = "0.1.0-alpha"
-authors = ["George Gkasdrogkas <georgegkas@gmail.com>"]
+authors = [ "George Gkasdrogkas <georgegkas@gmail.com>" ]
 edition = "2018"
 description = "RFC 8259 compliant JSON validator in Rust."
 documentation = "https://github.com/jsonprima/jsonprima"
 homepage = "https://github.com/jsonprima/jsonprima"
 repository = "https://github.com/jsonprima/jsonprima"
 readme = "README.md"
-keywords = ["json", "validate", "test", "rfc8259", "ECMA-404"]
-categories = ["parser-implementations", "command-line-utilities", "development-tools", "development-tools::debugging", "development-tools::testing"]
+keywords = [ "json", "validate", "test", "rfc8259", "ECMA-404" ]
+categories = [
+  "parser-implementations",
+  "command-line-utilities",
+  "development-tools",
+  "development-tools::debugging",
+  "development-tools::testing"
+]
 license = "MIT"
-include = ["src/**/*", "Cargo.toml"]
+include = [ "src/**/*", "Cargo.toml" ]
 
-[badges]
-travis-ci = { repository = "jsonprima/jsonprima", branch = "master" }
-maintenance = { status = "experimental" }
+[badges.travis-ci]
+repository = "jsonprima/jsonprima"
+branch = "master"
+
+[badges.maintenance]
+status = "experimental"
 
 [lib]
 name = "jsonprima"
