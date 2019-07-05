@@ -12,6 +12,13 @@ before_install:
     node -v
     npm -v
 
+stages:
+  - Test
+  - name: Deploy Crate
+    if: branch = master AND repo = jsonprima/jsonprima
+  - name: Deploy GitHub Releases
+    if: branch = master AND repo = jsonprima/jsonprima
+
 jobs:
   include:
     - stage: Test
@@ -22,3 +29,22 @@ jobs:
         - npm run format --all -- --check
         - npm run lint
         - npm run test
+    - stage: Deploy Crate
+      script: skip
+      provider: cargo
+        token:
+          secure: GhYHIXK+tqvQCcXYpAK337AOwa0X8Qrm1f6R1rnfsiZHywGGu414Dn+pQSisNF8uJPmGG7PlitzDyzPFGBfoiQtGlFA2iVjp6mF3JjCbG1trI1SJo3e+tBXnbz7vJDGIpUqwgHDhlVjbLeLcAljkXoCmkc3ZVMH4KlWHSmwIV6ifEkePdutN+8hMoa8TgHn4j8JPZ06Low+muOLuKpWw0sXjYosB4PiHy5dPSSxifVFEtCT914xbSBb5ljsjdmAQP8/5fSO7TCWqLaXXTQAldBPwntyOHrwEAUPcInfSm199Ow9YvWWNYNhcqoNFBMj4dWClMd3zNAfdlcahVBNF7x5snai0ywQJKvLBizMBJxAaa1CzAPRH3IDnYp3+bjk2EPaFUu6XjUDfNSZcWY7WWTlnU1RWYcAL7qKL9p45FoJDTt4MapNBPG5HDpuT/GK/vUwBeJEtKi6XUD7ycOvThEpH4cW482D/DFO/C4Jf4QH9ByBwbeyxFxEm/KJ183IqaUnWww31DCIc2qEWtBboptLBtxlNrWMsj6d1/Otw+00Ehq/IT8X9wEqpvSihKL4J68hsJ9pMn+7JYhkAsQFQFqSNGAmg+UAsDff29+lDIAUlcXFmli5yJOKTuM2teW7KnMsZMWru7BXrChgHZlT4Fm7RxBvrXfrclbA+cv3TbIk=
+        on:
+          tags: true
+    - stage: Deploy GitHub Releases
+      script:
+        - npm run clean
+        - npm run build
+      deploy:
+        provider: releases
+        api_key:
+          secure: BYf6PpszVKrNaSnJiHHFKjKIWtdIs5jDuWNoAayg3HWHgXiW5wtEUhR3B5jLrtMi8pCdDIuJhP4Zw5s+hArtidquqXMekYm+4D6T4+eW6QBdS5yXl8Hzyui5KQWsFf/aKEmvT1PNICGRRrXjm9W5C1Dt3pg1KqCey/sj8u0z4ZsA9TSMIJ7ilHygLFjVAHCjDLySeia2qL7Ee3/dOcdAbMlkEdSHjow/X+qBldn+2m9rusLw5TpVagXbXZC4h+2Tj1UVcv4RwektPo6z2HqW7YlV86C2ds2n8UNrK7/1nMSpjDJnwI78w/lIWbPwjBpZWYNm+36sCU0uioi+whk3ZnSjYx6k2gl6L69MkT/O4GOdD41r/QYkkSAfsxinDtlsTN5+spmQiW59wohiRi9jKZqo3hYZiRyPK+rA/8KVx4Y3nJKi8lPR+wvXJkqQDdelfZX1EKeN9pDJHfcmOLhNJ8Fye1HBW0v+GVcUDufNTiasqfnSe3xUB49LwURyu4dl+RdCoPvMkMcrVDE/b4eIFkc2XYusk04CdsfJehOghiiTmYUkD5om35gSHPSQzizMsQm4pTF2RpMHl6NBM8XewNCIhBuizIrkSqUJTI2HmuKWJJO1xJz8u/eP2720UADjyFfJwFX8MeFsdLPuDW1KSLU7FcniFBgGdpYKAphiOe8=
+        file: target/release/jsonprima
+        skip_cleanup: true
+        on:
+          tags: true

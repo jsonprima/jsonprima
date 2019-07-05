@@ -1,7 +1,7 @@
 {
   "version": "0.1.0-alpha",
   "scripts": {
-    "build": "cargo build",
+    "build": "cargo build --release && cargo doc --release",
     "check": "cargo check",
     "clean": "cargo clean",
     "cm": "git-cz",
@@ -9,6 +9,7 @@
     "lint": "cargo clippy -- -D warnings",
     "prerelease": "standard-version --skip.commit --skip.tag",
     "release": "git add . && standard-version -a --skip.bump --skip.changelog",
+    "release:publish": "git push origin HEAD && git push git push origin $(cat package.json | jq -r \".version\")",
     "test": "cargo test"
   },
   "devDependencies": {
