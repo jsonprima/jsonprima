@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/jsonprima/jsonprima/compare/v0.1.0...v0.1.1) (2019-07-05)
+
+
+### Bug Fixes
+
+* fix release:publish script ([984f07d](https://github.com/jsonprima/jsonprima/commit/984f07d)), closes [#3](https://github.com/jsonprima/jsonprima/issues/3)
+
+
+
 ## 0.1.0 (2019-07-05)
 
 
