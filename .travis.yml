@@ -14,10 +14,8 @@ before_install:
 
 stages:
   - Test
-  - name: Deploy Crate
-    if: branch = master AND repo = jsonprima/jsonprima
-  - name: Deploy GitHub Releases
-    if: branch = master AND repo = jsonprima/jsonprima
+  - Deploy Crate
+  - Deploy GitHub Releases
 
 jobs:
   include:
@@ -31,7 +29,8 @@ jobs:
         - npm run test
     - stage: Deploy Crate
       script: skip
-      provider: cargo
+      deploy:
+        provider: cargo
         token:
           secure: GhYHIXK+tqvQCcXYpAK337AOwa0X8Qrm1f6R1rnfsiZHywGGu414Dn+pQSisNF8uJPmGG7PlitzDyzPFGBfoiQtGlFA2iVjp6mF3JjCbG1trI1SJo3e+tBXnbz7vJDGIpUqwgHDhlVjbLeLcAljkXoCmkc3ZVMH4KlWHSmwIV6ifEkePdutN+8hMoa8TgHn4j8JPZ06Low+muOLuKpWw0sXjYosB4PiHy5dPSSxifVFEtCT914xbSBb5ljsjdmAQP8/5fSO7TCWqLaXXTQAldBPwntyOHrwEAUPcInfSm199Ow9YvWWNYNhcqoNFBMj4dWClMd3zNAfdlcahVBNF7x5snai0ywQJKvLBizMBJxAaa1CzAPRH3IDnYp3+bjk2EPaFUu6XjUDfNSZcWY7WWTlnU1RWYcAL7qKL9p45FoJDTt4MapNBPG5HDpuT/GK/vUwBeJEtKi6XUD7ycOvThEpH4cW482D/DFO/C4Jf4QH9ByBwbeyxFxEm/KJ183IqaUnWww31DCIc2qEWtBboptLBtxlNrWMsj6d1/Otw+00Ehq/IT8X9wEqpvSihKL4J68hsJ9pMn+7JYhkAsQFQFqSNGAmg+UAsDff29+lDIAUlcXFmli5yJOKTuM2teW7KnMsZMWru7BXrChgHZlT4Fm7RxBvrXfrclbA+cv3TbIk=
         on:
