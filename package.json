@@ -7,15 +7,19 @@
     "cm": "git-cz",
     "format": "cargo fmt -- ",
     "lint": "cargo clippy -- -D warnings",
+    "prerelease": "standard-version --skip.commit --skip.tag",
+    "release": "git add . && standard-version -a --skip.bump --skip.changelog",
     "test": "cargo test"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.0.0",
     "@commitlint/config-conventional": "^8.0.0",
+    "@iarna/toml": "^2.2.3",
     "commitizen": "^3.1.1",
     "cz-conventional-changelog": "^2.1.0",
     "husky": "^3.0.0",
-    "lint-staged": "^9.0.2"
+    "lint-staged": "^9.0.2",
+    "standard-version": "^6.0.1"
   },
   "config": {
     "commitizen": {
@@ -33,5 +37,10 @@
       "npm run format",
       "git add"
     ]
+  },
+  "standard-version": {
+    "scripts": {
+      "postbump": "node scripts/bump-cargo.js"
+    }
   }
 }
