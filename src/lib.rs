@@ -11,6 +11,9 @@ use validate_true::validate_true;
 mod validate_false;
 use validate_false::validate_false;
 
+mod validate_null;
+use validate_null::validate_null;
+
 // Public exports
 pub use error::ErrorType;
 
@@ -68,6 +71,13 @@ pub fn validate(code: &str) -> Vec<Error> {
       // Character `f` is the first character of the `false` literal name.
       'f' => {
         if validate_false(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
+
+      // Character `n` is the first character of the `null` literal name.
+      'n' => {
+        if validate_null(&mut tokens).is_err() {
           return tokens.errors;
         }
       }

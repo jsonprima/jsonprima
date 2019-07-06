@@ -22,6 +22,9 @@ pub enum ErrorType {
 
   /// Illegal character "f" after structural token. Expected comma or colon.
   E107,
+
+  /// Illegal character "n" after structural token. Expected comma or colon.
+  E108,
 }
 
 /// Used to represent the various error variants in this module.
@@ -39,6 +42,9 @@ impl ErrorType {
       ErrorType::E107 => {
         "Illegal character \"f\" after structural token. Expected comma or colon."
       }
+      ErrorType::E108 => {
+        "Illegal character \"n\" after structural token. Expected comma or colon."
+      }
     }
   }
 
@@ -51,6 +57,7 @@ impl ErrorType {
       ErrorType::E105 => "E105",
       ErrorType::E106 => "E106",
       ErrorType::E107 => "E107",
+      ErrorType::E108 => "E108",
     }
   }
 }
