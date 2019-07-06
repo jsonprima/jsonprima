@@ -35,6 +35,13 @@ pub use error::ErrorType;
 /// let errors = jsonprima::validate(&text);
 /// println!("{:#?}", errors); // => []
 /// ```
+///
+/// ```rust
+/// // Invalid `true` root value in JSON document.
+/// let text: &str = "trua";
+/// let errors = jsonprima::validate(&text);
+/// println!("{:#?}", errors); // => [("E104", 0, 4)]
+/// ```
 pub fn validate(code: &str) -> Vec<Error> {
   let mut tokens = Tokens::new(code.chars().enumerate().peekable());
 
