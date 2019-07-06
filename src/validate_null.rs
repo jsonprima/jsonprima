@@ -5,7 +5,7 @@ use crate::tokens::{ParseTokens, Tokens};
 // match expected_character.
 macro_rules! next {
   ($tokens:ident, $expected_character:expr, $index_start:expr) => {
-    let err = $tokens
+    let result = $tokens
       .iterator
       .next()
       .ok_or_else(|| {
@@ -35,19 +35,33 @@ macro_rules! next {
         }
       });
 
-    if err.is_err() {
-      return err;
+    if result.is_err() {
+      return result;
     }
   };
 }
 
 fn validate(tokens: &mut Tokens) -> Result<(), ()> {
+  // Save the position of the first character.
+  // This will help us set a range that will highlight the whole incorrect value
+  // in case of an error.
+  //
+  // Example:
+  //
+  // ```rust
+  // // Invalid `falsA` root value in JSON document.
+  // let text: &str = "falsA";
+  // let errors = jsonprima::validate(&text);
+  // println!("{:#?}", errors); // => [("E104", 0, 5)]
+  // ```
   let index_start = tokens.current_iterator_index;
 
   next!(tokens, 'u', index_start);
   next!(tokens, 'l', index_start);
   next!(tokens, 'l', index_start);
 
+  // If none of the macro invocations returned error,
+  // we have successfully validate the value.
   tokens.last_parsed_token = Some(ParseTokens::Null);
 
   Ok(())
