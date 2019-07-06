@@ -58,11 +58,8 @@ pub fn validate_null(tokens: &mut Tokens) -> Result<(), ()> {
     Some(last_parsed_token) => match last_parsed_token {
       // Illegal character "n" after structural token. Expected comma or colon.
       _ => {
-        let err = Error::new(
-          ErrorType::E108,
-          tokens.current_iterator_index,
-          tokens.current_iterator_index + 1,
-        );
+        let last_parsed_index = tokens.current_iterator_index;
+        let err = Error::new(ErrorType::E108, last_parsed_index, last_parsed_index + 1);
         tokens.errors.push(err);
 
         Err(())

@@ -58,11 +58,8 @@ pub fn validate_true(tokens: &mut Tokens) -> Result<(), ()> {
     Some(last_parsed_token) => match last_parsed_token {
       // Illegal character "t" after structural token. Expected comma or colon.
       _ => {
-        let err = Error::new(
-          ErrorType::E103,
-          tokens.current_iterator_index,
-          tokens.current_iterator_index + 1,
-        );
+        let last_parsed_index = tokens.current_iterator_index;
+        let err = Error::new(ErrorType::E103, last_parsed_index, last_parsed_index + 1);
         tokens.errors.push(err);
 
         Err(())
