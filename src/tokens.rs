@@ -43,16 +43,16 @@ pub mod general_tokens {
 #[derive(Debug)]
 pub enum ParseTokens {
   // BeginArray,
-// BeginObject,
-// EndArray,
-// EndObject,
-// String,
-// NameSeparator,
-// ValueSeparator,
-// True,
-// False,
-// Null,
-// Number,
+  // BeginObject,
+  // EndArray,
+  // EndObject,
+  // String,
+  // NameSeparator,
+  // ValueSeparator,
+  // True,
+  // False,
+  // Null,
+  // Number,
 }
 
 // Validate nested JSON values using a stack that track the
@@ -77,8 +77,8 @@ pub enum ParseTokens {
 #[derive(Debug)]
 pub enum StackTokens {
   // BeginArray,
-// BeginObject,
-// NameSeparator,
+  // BeginObject,
+  // NameSeparator,
 }
 
 // Helper structure to track all the info used by the validator,
