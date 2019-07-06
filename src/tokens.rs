@@ -49,7 +49,7 @@ pub enum ParseTokens {
   // String,
   // NameSeparator,
   // ValueSeparator,
-  // True,
+  True,
   // False,
   // Null,
   // Number,
@@ -77,8 +77,8 @@ pub enum ParseTokens {
 #[derive(Debug)]
 pub enum StackTokens {
   // BeginArray,
-  // BeginObject,
-  // NameSeparator,
+// BeginObject,
+// NameSeparator,
 }
 
 // Helper structure to track all the info used by the validator,

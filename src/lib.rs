@@ -5,6 +5,9 @@ use error::Error;
 use tokens::general_tokens::*;
 use tokens::Tokens;
 
+mod validate_true;
+use validate_true::validate_true;
+
 // Public exports
 pub use error::ErrorType;
 
@@ -51,6 +54,13 @@ pub fn validate(code: &str) -> Vec<Error> {
     match current_character {
       // Space character is always valid in a JSON document.
       SPACE | NEW_LINE | CARRIAGE_RETURN | HORIZONTAL_TAB => continue,
+
+      // Character `t` is the first character of the `true` literal name.
+      't' => {
+        if validate_true(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
 
       // Invalid literal.
       _ => {

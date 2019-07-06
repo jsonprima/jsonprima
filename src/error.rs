@@ -8,6 +8,15 @@ pub enum ErrorType {
   /// Empty JSON document.
   E100,
 
+  /// Illegal character "t" after structural token. Expected comma or colon.
+  E103,
+
+  /// No more graphemes to parse.
+  E104,
+
+  /// Invalid character in literal name.
+  E105,
+
   /// Invalid literal.
   E106,
 }
@@ -18,6 +27,11 @@ impl ErrorType {
   pub fn description(&self) -> &str {
     match self {
       ErrorType::E100 => "Empty JSON document.",
+      ErrorType::E103 => {
+        "Illegal character \"t\" after structural token. Expected comma or colon."
+      }
+      ErrorType::E104 => "No more graphemes to parse.",
+      ErrorType::E105 => "Invalid character in literal name.",
       ErrorType::E106 => "Invalid literal.",
     }
   }
@@ -26,6 +40,9 @@ impl ErrorType {
   pub fn code(&self) -> &str {
     match self {
       ErrorType::E100 => "E100",
+      ErrorType::E103 => "E103",
+      ErrorType::E104 => "E104",
+      ErrorType::E105 => "E105",
       ErrorType::E106 => "E106",
     }
   }
