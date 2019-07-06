@@ -3,26 +3,26 @@ use crate::error::Error;
 // List of structural tokens defined in RFC 8259
 // and pseudo tokens, such as whitespace characters.
 pub mod general_tokens {
-  // begin-array = ws %x5B ws ; `[` left square bracket
-  pub const BEGIN_ARRAY: char = '[';
+  // // begin-array = ws %x5B ws ; `[` left square bracket
+  // pub const BEGIN_ARRAY: char = '[';
 
-  // begin-object = ws %x7B ws ; `{` left curly bracket
-  pub const BEGIN_OBJECT: char = '{';
+  // // begin-object = ws %x7B ws ; `{` left curly bracket
+  // pub const BEGIN_OBJECT: char = '{';
 
-  // end-array = ws %x5D ws ; `]` right square bracket
-  pub const END_ARRAY: char = ']';
+  // // end-array = ws %x5D ws ; `]` right square bracket
+  // pub const END_ARRAY: char = ']';
 
-  // end-object = ws %x7D ws ; `}` right curly bracket
-  pub const END_OBJECT: char = '}';
+  // // end-object = ws %x7D ws ; `}` right curly bracket
+  // pub const END_OBJECT: char = '}';
 
-  // quotation-mark = ws %x22 ws ; `"` quotation-mark
-  pub const QUOTATION_MARK: char = '"';
+  // // quotation-mark = ws %x22 ws ; `"` quotation-mark
+  // pub const QUOTATION_MARK: char = '"';
 
-  // name-separator = ws %x3A ws ; `:` colon
-  pub const NAME_SEPARATOR: char = ':';
+  // // name-separator = ws %x3A ws ; `:` colon
+  // pub const NAME_SEPARATOR: char = ':';
 
-  // value-separator = ws %x2C ws ; `,` comma
-  pub const VALUE_SEPARATOR: char = ',';
+  // // value-separator = ws %x2C ws ; `,` comma
+  // pub const VALUE_SEPARATOR: char = ',';
 
   // Space = ws %x20 ws ; ` ` space
   pub const SPACE: char = ' ';
@@ -42,17 +42,17 @@ pub mod general_tokens {
 // token and value.
 #[derive(Debug)]
 pub enum ParseTokens {
-  BeginArray,
-  BeginObject,
-  EndArray,
-  EndObject,
-  String,
-  NameSeparator,
-  ValueSeparator,
-  True,
-  False,
-  Null,
-  Number,
+  // BeginArray,
+// BeginObject,
+// EndArray,
+// EndObject,
+// String,
+// NameSeparator,
+// ValueSeparator,
+// True,
+// False,
+// Null,
+// Number,
 }
 
 // Validate nested JSON values using a stack that track the
@@ -76,9 +76,9 @@ pub enum ParseTokens {
 // parsed an object member and this token is not valid.
 #[derive(Debug)]
 pub enum StackTokens {
-  BeginArray,
-  BeginObject,
-  NameSeparator,
+  // BeginArray,
+// BeginObject,
+// NameSeparator,
 }
 
 // Helper structure to track all the info used by the validator,
