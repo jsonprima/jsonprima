@@ -24,7 +24,27 @@ pub use error::ErrorType;
 /// println!("{:#?}", errors); // => []
 /// ```
 pub fn validate(code: &str) -> Vec<Error> {
-  let tokens = Tokens::new(code.chars().enumerate().peekable());
+  let mut tokens = Tokens::new(code.chars().enumerate().peekable());
+
+  // Iterate over all characters and return a Result if there is any error.
+  while let Some((current_index, current_character)) = tokens.iterator.next() {
+    // Save the current index and character to tokens struct.
+    tokens.current_iterator_index = current_index;
+    tokens.current_iterator_character = current_character;
+
+    // Match the token type of the character (begin-array, horizontal-tab, etc).
+    // We check the first character of a JSON value to determine
+    // what value to validate, i.e. string, number, literal name, etc.
+    match current_character {
+      // Invalid literal.
+      _ => {
+        let err = Error::new(ErrorType::E106, current_index, current_index + 1);
+        tokens.errors.push(err);
+
+        return tokens.errors;
+      }
+    }
+  }
 
   tokens.errors
 }

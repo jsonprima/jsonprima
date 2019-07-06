@@ -4,18 +4,25 @@
 
 /// A list of all error variants used by this module.
 #[derive(Debug)]
-pub enum ErrorType {}
+pub enum ErrorType {
+  /// Invalid literal.
+  E106,
+}
 
 /// Used to represent the various error variants in this module.
 impl ErrorType {
   /// Return the error description.
   pub fn description(&self) -> &str {
-    unimplemented!();
+    match self {
+      ErrorType::E106 => "Invalid literal.",
+    }
   }
 
   /// Return the error code.
   pub fn code(&self) -> &str {
-    unimplemented!();
+    match self {
+      ErrorType::E106 => "E106",
+    }
   }
 }
 
