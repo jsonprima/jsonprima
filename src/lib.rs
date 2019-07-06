@@ -8,6 +8,9 @@ use tokens::Tokens;
 mod validate_true;
 use validate_true::validate_true;
 
+mod validate_false;
+use validate_false::validate_false;
+
 // Public exports
 pub use error::ErrorType;
 
@@ -58,6 +61,13 @@ pub fn validate(code: &str) -> Vec<Error> {
       // Character `t` is the first character of the `true` literal name.
       't' => {
         if validate_true(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
+
+      // Character `f` is the first character of the `false` literal name.
+      'f' => {
+        if validate_false(&mut tokens).is_err() {
           return tokens.errors;
         }
       }

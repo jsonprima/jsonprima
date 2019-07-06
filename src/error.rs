@@ -19,6 +19,9 @@ pub enum ErrorType {
 
   /// Invalid literal.
   E106,
+
+  /// Illegal character "f" after structural token. Expected comma or colon.
+  E107,
 }
 
 /// Used to represent the various error variants in this module.
@@ -33,6 +36,9 @@ impl ErrorType {
       ErrorType::E104 => "No more graphemes to parse.",
       ErrorType::E105 => "Invalid character in literal name.",
       ErrorType::E106 => "Invalid literal.",
+      ErrorType::E107 => {
+        "Illegal character \"f\" after structural token. Expected comma or colon."
+      }
     }
   }
 
@@ -44,6 +50,7 @@ impl ErrorType {
       ErrorType::E104 => "E104",
       ErrorType::E105 => "E105",
       ErrorType::E106 => "E106",
+      ErrorType::E107 => "E107",
     }
   }
 }

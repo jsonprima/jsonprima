@@ -50,7 +50,7 @@ pub enum ParseTokens {
   // NameSeparator,
   // ValueSeparator,
   True,
-  // False,
+  False,
   // Null,
   // Number,
 }
