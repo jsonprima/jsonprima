@@ -3,6 +3,7 @@
 // TODO: Add documentation examples to `description`, `code` and `new` functions.
 
 /// A list of all error variants used by this module.
+#[derive(Debug)]
 pub enum ErrorType {}
 
 /// Used to represent the various error variants in this module.
@@ -19,6 +20,7 @@ impl ErrorType {
 }
 
 /// Error type of validation functions.
+#[derive(Debug)]
 pub struct Error {
   /// The ErrorType variant that describes the current error.
   pub err: ErrorType,

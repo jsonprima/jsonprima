@@ -40,6 +40,7 @@ pub mod general_tokens {
 // Enumerate structural tokens and JSON values
 // to track each corresponding parsed JSON structural
 // token and value.
+#[derive(Debug)]
 pub enum ParseTokens {
   BeginArray,
   BeginObject,
@@ -73,6 +74,7 @@ pub enum ParseTokens {
 // In the next iteration we check the name-separator after "invalid"
 // with the last parsed token in the stack. We see that we have already
 // parsed an object member and this token is not valid.
+#[derive(Debug)]
 pub enum StackTokens {
   BeginArray,
   BeginObject,
