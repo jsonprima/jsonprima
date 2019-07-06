@@ -23,3 +23,6 @@ test!(test_9, "\t\t\t", vec![("E100", 2, 3)]);
 
 // Empty document multiple whitespace characters.
 test!(test_10, "  \t \n \r \r\n \t\t ", vec![("E100", 13, 14)]);
+
+// Ignore byte order mark.
+test!(test_11, "\u{feff}  ", vec![("E100", 2, 3)]);

@@ -27,6 +27,16 @@ pub use error::ErrorType;
 pub fn validate(code: &str) -> Vec<Error> {
   let mut tokens = Tokens::new(code.chars().enumerate().peekable());
 
+  if tokens
+    .iterator
+    .peek()
+    .filter(|(_, current_character)| current_character == &'\u{feff}')
+    .is_some()
+  {
+    // Ignore byte order mark.
+    tokens.iterator.next();
+  }
+
   // Iterate over all characters and return a Result if there is any error.
   while let Some((current_index, current_character)) = tokens.iterator.next() {
     // Save the current index and character to tokens struct.
