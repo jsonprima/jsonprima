@@ -2,6 +2,7 @@ mod error;
 mod tokens;
 
 use error::Error;
+use tokens::general_tokens::*;
 use tokens::Tokens;
 
 // Public exports
@@ -36,6 +37,9 @@ pub fn validate(code: &str) -> Vec<Error> {
     // We check the first character of a JSON value to determine
     // what value to validate, i.e. string, number, literal name, etc.
     match current_character {
+      // Space character is always valid in a JSON document.
+      SPACE | NEW_LINE | CARRIAGE_RETURN | HORIZONTAL_TAB => continue,
+
       // Invalid literal.
       _ => {
         let err = Error::new(ErrorType::E106, current_index, current_index + 1);
@@ -44,6 +48,15 @@ pub fn validate(code: &str) -> Vec<Error> {
         return tokens.errors;
       }
     }
+  }
+
+  // In case we have not parsed any JSON value,
+  // return empty JSON error.
+  if tokens.last_parsed_token.is_none() {
+    let last_parsed_index = tokens.current_iterator_index;
+    // Empty JSON document.
+    let err = Error::new(ErrorType::E100, last_parsed_index, last_parsed_index + 1);
+    tokens.errors.push(err);
   }
 
   tokens.errors

@@ -5,6 +5,9 @@
 /// A list of all error variants used by this module.
 #[derive(Debug)]
 pub enum ErrorType {
+  /// Empty JSON document.
+  E100,
+
   /// Invalid literal.
   E106,
 }
@@ -14,6 +17,7 @@ impl ErrorType {
   /// Return the error description.
   pub fn description(&self) -> &str {
     match self {
+      ErrorType::E100 => "Empty JSON document.",
       ErrorType::E106 => "Invalid literal.",
     }
   }
@@ -21,6 +25,7 @@ impl ErrorType {
   /// Return the error code.
   pub fn code(&self) -> &str {
     match self {
+      ErrorType::E100 => "E100",
       ErrorType::E106 => "E106",
     }
   }
