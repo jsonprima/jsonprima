@@ -44,3 +44,9 @@ test!(test_34, "true (", vec![("E106", 5, 6)]);
 test!(test_35, " true ***", vec![("E106", 6, 7)]);
 test!(test_36, " \n\r true \tq", vec![("E106", 10, 11)]);
 test!(test_37, " true😋", vec![("E106", 5, 6)]);
+
+// true false
+test!(test_38, "truefalse", vec![("E107", 4, 5)]);
+test!(test_39, "true false", vec![("E107", 5, 6)]);
+test!(test_40, " true false", vec![("E107", 6, 7)]);
+test!(test_41, " \n\r true \tfalse", vec![("E107", 10, 11)]);
