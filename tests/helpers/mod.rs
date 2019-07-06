@@ -1,5 +1,3 @@
-use jsonprima;
-
 // Helper macro to test against errors in validate function.
 #[macro_export]
 macro_rules! test {
