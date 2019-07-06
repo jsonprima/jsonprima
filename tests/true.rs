@@ -56,3 +56,9 @@ test!(test_43, "truenull", vec![("E108", 4, 5)]);
 test!(test_44, "true null", vec![("E108", 5, 6)]);
 test!(test_45, " true null", vec![("E108", 6, 7)]);
 test!(test_46, " \n\r true \r\nnull", vec![("E108", 11, 12)]);
+
+// true number
+test!(test_49, "true0", vec![("E109", 4, 5)]);
+test!(test_50, "true 0", vec![("E109", 5, 6)]);
+test!(test_51, " true 0", vec![("E109", 6, 7)]);
+test!(test_52, " \n\r true \t0", vec![("E109", 10, 11)]);
