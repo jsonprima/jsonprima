@@ -52,7 +52,7 @@ pub enum ParseTokens {
   True,
   False,
   Null,
-  // Number,
+  Number,
 }
 
 // Validate nested JSON values using a stack that track the

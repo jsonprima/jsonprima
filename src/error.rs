@@ -25,6 +25,21 @@ pub enum ErrorType {
 
   /// Illegal character "n" after structural token. Expected comma or colon.
   E108,
+
+  /// Illegal number after structural token. Expected comma or colon.
+  E109,
+
+  /// Illegal non ASCII decimal digit character in number.
+  E110,
+
+  /// Numbers cannot contain leading zeros.
+  E111,
+
+  /// Could not parse out of range JSON number.
+  E112,
+
+  /// Could not parse JSON number.
+  E113,
 }
 
 /// Used to represent the various error variants in this module.
@@ -45,6 +60,13 @@ impl ErrorType {
       ErrorType::E108 => {
         "Illegal character \"n\" after structural token. Expected comma or colon."
       }
+      ErrorType::E109 => {
+        "Illegal number after structural token. Expected comma or colon."
+      }
+      ErrorType::E110 => "Illegal non ASCII decimal digit character in number.",
+      ErrorType::E111 => "Numbers cannot contain leading zeros.",
+      ErrorType::E112 => "Could not parse out of range JSON number.",
+      ErrorType::E113 => "Could not parse JSON number.",
     }
   }
 
@@ -58,6 +80,11 @@ impl ErrorType {
       ErrorType::E106 => "E106",
       ErrorType::E107 => "E107",
       ErrorType::E108 => "E108",
+      ErrorType::E109 => "E109",
+      ErrorType::E110 => "E110",
+      ErrorType::E111 => "E111",
+      ErrorType::E112 => "E112",
+      ErrorType::E113 => "E113",
     }
   }
 }

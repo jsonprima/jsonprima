@@ -14,6 +14,9 @@ use validate_false::validate_false;
 mod validate_null;
 use validate_null::validate_null;
 
+mod validate_number;
+use validate_number::validate_number;
+
 // Public exports
 pub use error::ErrorType;
 
@@ -85,6 +88,13 @@ pub fn validate(code: &str) -> Vec<Error> {
       // Character `n` is the first character of the `null` literal name.
       'n' => {
         if validate_null(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
+
+      // Parse JSON number.
+      '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '-' => {
+        if validate_number(&mut tokens).is_err() {
           return tokens.errors;
         }
       }
