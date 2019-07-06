@@ -15,6 +15,8 @@ pub use error::ErrorType;
 /// **Notes**
 /// - There is no limit to the size of the provided text to validate.
 /// - There is no limit to the nesting of the JSON document.
+/// - Ignores BOM, if it is present in the beginning of a JSON document,
+///   without failing.
 ///
 /// **Examples**
 ///
