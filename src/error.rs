@@ -59,6 +59,15 @@ pub enum ErrorType {
   // Invalid Unicode escape sequence in second surrogate pair.
   E119,
 
+  // Unexpected comma at the start of JSON document.
+  E122,
+
+  // Unexpected comma after structural token.
+  E123,
+
+  // Invalid use of comma after document root value.
+  E124,
+
   // Illegal begin-array after JSON value.
   E125,
 
@@ -67,6 +76,9 @@ pub enum ErrorType {
 
   // Unterminated array.
   E127,
+
+  // Illegal end-array after comma.
+  E129,
 }
 
 /// Used to represent the various error variants in this module.
@@ -102,9 +114,13 @@ impl ErrorType {
       ErrorType::E117 => "Invalid character found in Unicode escape sequence.",
       ErrorType::E118 => "Invalid Unicode grapheme in JSON string.",
       ErrorType::E119 => "Invalid Unicode escape sequence in second surrogate pair.",
+      ErrorType::E122 => "Unexpected comma at the start of JSON document.",
+      ErrorType::E123 => "Unexpected comma after structural token.",
+      ErrorType::E124 => "Invalid use of comma after document root value.",
       ErrorType::E125 => "Illegal begin-array after JSON value.",
       ErrorType::E126 => "Illegal end-array. No begin-array match.",
       ErrorType::E127 => "Unterminated array.",
+      ErrorType::E129 => "Illegal end-array after comma.",
     }
   }
 
@@ -129,9 +145,13 @@ impl ErrorType {
       ErrorType::E117 => "E117",
       ErrorType::E118 => "E118",
       ErrorType::E119 => "E119",
+      ErrorType::E122 => "E122",
+      ErrorType::E123 => "E123",
+      ErrorType::E124 => "E124",
       ErrorType::E125 => "E125",
       ErrorType::E126 => "E126",
       ErrorType::E127 => "E127",
+      ErrorType::E129 => "E129",
     }
   }
 }

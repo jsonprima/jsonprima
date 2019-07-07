@@ -32,6 +32,15 @@ pub fn validate_end_array(tokens: &mut Tokens) -> Result<(), ()> {
         }
       }
 
+      ParseTokens::ValueSeparator => {
+        // Illegal end-array after comma.
+        let last_parsed_index = tokens.current_iterator_index;
+        let err = Error::new(ErrorType::E129, last_parsed_index, last_parsed_index + 1);
+        tokens.errors.push(err);
+
+        Err(())
+      }
+
       _ => {
         // Illegal end-array. No begin-array match.
         let last_parsed_index = tokens.current_iterator_index;

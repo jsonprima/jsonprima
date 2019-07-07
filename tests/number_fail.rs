@@ -157,3 +157,9 @@ test!(test_61, "0]", vec![("E126", 1, 2)]);
 test!(test_62, "0 ]", vec![("E126", 2, 3)]);
 test!(test_63, " 0 ]", vec![("E126", 3, 4)]);
 test!(test_64, " \n\r 0 \t]", vec![("E126", 7, 8)]);
+
+// number value-separator
+test!(test_65, "0,", vec![("E124", 1, 2)]);
+test!(test_66, "0 ,", vec![("E124", 2, 3)]);
+test!(test_67, " 0 ,", vec![("E124", 3, 4)]);
+test!(test_68, " \n\r 0 \t,", vec![("E124", 7, 8)]);

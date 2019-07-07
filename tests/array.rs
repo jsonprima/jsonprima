@@ -67,3 +67,57 @@ test!(test_39, "[ \"55\" ]", vec![]);
 test!(test_40, "[ [ \"55\"  ]]", vec![]);
 test!(test_41, "[[[\"55\"]", vec![("E127", 7, 8)]);
 test!(test_42, "[\"55\"]]]]", vec![("E126", 6, 7)]);
+
+// Multiple true as array element
+test!(test_43, "[ true, true, true ]", vec![]);
+test!(test_44, "[ [ true, true, true  ], true, true]", vec![]);
+test!(test_45, "[[[true, true, true]", vec![("E127", 19, 20)]);
+test!(test_46, "[true, true, true]]]]", vec![("E126", 18, 19)]);
+
+// Multiple false as array element
+test!(test_47, "[ false, false, false ]", vec![]);
+test!(
+  test_48,
+  "[ [ false, false, false  ], false, false, false]",
+  vec![]
+);
+test!(test_49, "[[[false, false, false]", vec![("E127", 22, 23)]);
+test!(test_50, "[false, false, false]]]]", vec![("E126", 21, 22)]);
+
+// Multiple null as array element
+test!(test_51, "[ null, null, null ]", vec![]);
+test!(
+  test_52,
+  "[ [ null, null, null  ], null, null, null]",
+  vec![]
+);
+test!(test_53, "[[[null, null, null]", vec![("E127", 19, 20)]);
+test!(test_54, "[null, null, null]]]]", vec![("E126", 18, 19)]);
+
+// Multiple number as array element
+test!(test_55, "[ 12.9, 12.9, 12.9 ]", vec![]);
+test!(
+  test_56,
+  "[ [ 12.9, 12.9, 12.9  ], 12.9, 12.9, 12.9]",
+  vec![]
+);
+test!(test_57, "[[[12.9, 12.9, 12.9]", vec![("E127", 19, 20)]);
+test!(test_58, "[12.9, 12.9, 12.9]]]]", vec![("E126", 18, 19)]);
+
+// Multiple string as array element
+test!(test_59, "[ \"55\", \"55\", \"55\" ]", vec![]);
+test!(
+  test_60,
+  "[ [ \"55\", \"55\", \"55\"  ], \"55\", \"55\", \"55\"]",
+  vec![]
+);
+test!(
+  test_61,
+  "[[[\"55\", \"55\", \"55\"]",
+  vec![("E127", 19, 20)]
+);
+test!(
+  test_62,
+  "[\"55\", \"55\", \"55\"]]]]",
+  vec![("E126", 18, 19)]
+);

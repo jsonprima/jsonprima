@@ -271,6 +271,8 @@ pub fn validate_number(tokens: &mut Tokens) -> Result<(), ()> {
     Some(last_parsed_token) => match last_parsed_token {
       ParseTokens::BeginArray => validate(tokens),
 
+      ParseTokens::ValueSeparator => validate(tokens),
+
       // Illegal number after structural token. Expected comma or colon.
       _ => {
         let last_parsed_index = tokens.current_iterator_index;

@@ -4,6 +4,22 @@ use crate::tokens::{ParseTokens, StackTokens, Tokens};
 pub fn validate_begin_array(tokens: &mut Tokens) -> Result<(), ()> {
   match &tokens.last_parsed_token {
     Some(last_parsed_token) => match last_parsed_token {
+      ParseTokens::ValueSeparator => {
+        match tokens.stack.last() {
+          Some(token) => match token {
+            StackTokens::BeginArray => {
+              tokens.last_parsed_token = Some(ParseTokens::BeginArray);
+              tokens.stack.push(StackTokens::BeginArray);
+              Ok(())
+            }
+
+            _ => Ok(()), // unreachable
+          },
+
+          None => Ok(()), // unreachable
+        }
+      }
+
       ParseTokens::BeginArray => {
         tokens.last_parsed_token = Some(ParseTokens::BeginArray);
         tokens.stack.push(StackTokens::BeginArray);

@@ -80,3 +80,9 @@ test!(test_61, "true]", vec![("E126", 4, 5)]);
 test!(test_62, "true ]", vec![("E126", 5, 6)]);
 test!(test_63, " true ]", vec![("E126", 6, 7)]);
 test!(test_64, " \n\r true \t]", vec![("E126", 10, 11)]);
+
+// true value-separator
+test!(test_65, "true,", vec![("E124", 4, 5)]);
+test!(test_66, "true ,", vec![("E124", 5, 6)]);
+test!(test_67, " true ,", vec![("E124", 6, 7)]);
+test!(test_68, " \n\r true \t,", vec![("E124", 10, 11)]);

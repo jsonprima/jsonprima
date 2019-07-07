@@ -83,3 +83,9 @@ test!(test_50, "null]", vec![("E126", 4, 5)]);
 test!(test_51, "null ]", vec![("E126", 5, 6)]);
 test!(test_52, " null ]", vec![("E126", 6, 7)]);
 test!(test_53, " \n\r null \t]", vec![("E126", 10, 11)]);
+
+// null value-separator
+test!(test_54, "null,", vec![("E124", 4, 5)]);
+test!(test_55, "null ,", vec![("E124", 5, 6)]);
+test!(test_56, " null ,", vec![("E124", 6, 7)]);
+test!(test_57, " \n\r null \t,", vec![("E124", 10, 11)]);

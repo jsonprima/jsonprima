@@ -26,6 +26,9 @@ use validate_begin_array::validate_begin_array;
 mod validate_end_array;
 use validate_end_array::validate_end_array;
 
+mod validate_value_separator;
+use validate_value_separator::validate_value_separator;
+
 // Public exports
 pub use error::ErrorType;
 
@@ -123,6 +126,12 @@ pub fn validate(code: &str) -> Vec<Error> {
 
       END_ARRAY => {
         if validate_end_array(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
+
+      VALUE_SEPARATOR => {
+        if validate_value_separator(&mut tokens).is_err() {
           return tokens.errors;
         }
       }

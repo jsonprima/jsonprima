@@ -87,3 +87,9 @@ test!(test_55, "false]", vec![("E126", 5, 6)]);
 test!(test_56, "false ]", vec![("E126", 6, 7)]);
 test!(test_57, " false ]", vec![("E126", 7, 8)]);
 test!(test_58, " \n\r false \t]", vec![("E126", 11, 12)]);
+
+// false value-separator
+test!(test_59, "false,", vec![("E124", 5, 6)]);
+test!(test_60, "false ,", vec![("E124", 6, 7)]);
+test!(test_61, " false ,", vec![("E124", 7, 8)]);
+test!(test_62, " \n\r false \t,", vec![("E124", 11, 12)]);

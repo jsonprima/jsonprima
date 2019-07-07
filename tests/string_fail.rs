@@ -205,3 +205,9 @@ test!(test_78, "\"\"]", vec![("E126", 2, 3)]);
 test!(test_79, "\"\" ]", vec![("E126", 3, 4)]);
 test!(test_80, " \"\" ]", vec![("E126", 4, 5)]);
 test!(test_81, " \n\r \"\" \t]", vec![("E126", 8, 9)]);
+
+// string value-separator
+test!(test_82, "\"\",", vec![("E124", 2, 3)]);
+test!(test_83, "\"\" ,", vec![("E124", 3, 4)]);
+test!(test_84, " \"\" ,", vec![("E124", 4, 5)]);
+test!(test_85, " \n\r \"\" \t,", vec![("E124", 8, 9)]);

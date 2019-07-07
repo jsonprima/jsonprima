@@ -21,8 +21,8 @@ pub mod general_tokens {
   // // name-separator = ws %x3A ws ; `:` colon
   // pub const NAME_SEPARATOR: char = ':';
 
-  // // value-separator = ws %x2C ws ; `,` comma
-  // pub const VALUE_SEPARATOR: char = ',';
+  // value-separator = ws %x2C ws ; `,` comma
+  pub const VALUE_SEPARATOR: char = ',';
 
   // Space = ws %x20 ws ; ` ` space
   pub const SPACE: char = ' ';
@@ -48,7 +48,7 @@ pub enum ParseTokens {
   // EndObject,
   String,
   // NameSeparator,
-  // ValueSeparator,
+  ValueSeparator,
   True,
   False,
   Null,
