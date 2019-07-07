@@ -55,3 +55,9 @@ test!(test_31, "[ null ]", vec![]);
 test!(test_32, "[ [ null  ]]", vec![]);
 test!(test_33, "[[[null]", vec![("E127", 7, 8)]);
 test!(test_34, "[null]]]]", vec![("E126", 6, 7)]);
+
+// Number as array element
+test!(test_35, "[ 12.9 ]", vec![]);
+test!(test_36, "[ [ 12.9  ]]", vec![]);
+test!(test_37, "[[[12.9]", vec![("E127", 7, 8)]);
+test!(test_38, "[12.9]]]]", vec![("E126", 6, 7)]);
