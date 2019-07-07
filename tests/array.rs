@@ -170,3 +170,35 @@ test!(test_92, "[10],", vec![("E124", 4, 5)]);
 test!(test_93, "[10] ,", vec![("E124", 5, 6)]);
 test!(test_94, " [10] ,", vec![("E124", 6, 7)]);
 test!(test_95, " \n\r [10] \t,", vec![("E124", 10, 11)]);
+
+// Trailing comma
+test!(test_96, "[true,]", vec![("E129", 6, 7)]);
+test!(test_97, "[false,]", vec![("E129", 7, 8)]);
+test!(test_98, "[null,]", vec![("E129", 6, 7)]);
+test!(test_99, "[1000,]", vec![("E129", 6, 7)]);
+test!(test_100, "[\"00\",]", vec![("E129", 6, 7)]);
+test!(test_101, "[[10],]", vec![("E129", 6, 7)]);
+
+// Double trailing comma
+test!(test_102, "[true,,]", vec![("E123", 6, 7)]);
+test!(test_103, "[false,,]", vec![("E123", 7, 8)]);
+test!(test_104, "[null,,]", vec![("E123", 6, 7)]);
+test!(test_105, "[1000,,]", vec![("E123", 6, 7)]);
+test!(test_106, "[\"00\",,]", vec![("E123", 6, 7)]);
+test!(test_107, "[[10],,]", vec![("E123", 6, 7)]);
+
+// Trailing comma in unterminated array
+test!(test_108, "[true,", vec![("E127", 5, 6)]);
+test!(test_109, "[false,", vec![("E127", 6, 7)]);
+test!(test_110, "[null,", vec![("E127", 5, 6)]);
+test!(test_111, "[1000,", vec![("E127", 5, 6)]);
+test!(test_112, "[\"00\",", vec![("E127", 5, 6)]);
+test!(test_113, "[[10],", vec![("E127", 5, 6)]);
+
+// Double trailing comma in unterminated array
+test!(test_114, "[true,,", vec![("E123", 6, 7)]);
+test!(test_115, "[false,,", vec![("E123", 7, 8)]);
+test!(test_116, "[null,,", vec![("E123", 6, 7)]);
+test!(test_117, "[1000,,", vec![("E123", 6, 7)]);
+test!(test_118, "[\"00\",,", vec![("E123", 6, 7)]);
+test!(test_119, "[[10],,", vec![("E123", 6, 7)]);
