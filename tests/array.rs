@@ -37,3 +37,9 @@ test!(test_20, " [[[ \n ]]]] ", vec![("E126", 10, 11)]);
 // Unterminated nested arrays
 test!(test_21, "[[[[[[[]]]] ", vec![("E127", 11, 12)]);
 test!(test_22, " [[[\n\n[[[[[[ \n ]]]] ", vec![("E127", 19, 20)]);
+
+// true as array element
+test!(test_23, "[ true ]", vec![]);
+test!(test_24, "[ [ true  ]]", vec![]);
+test!(test_25, "[[[true]", vec![("E127", 7, 8)]);
+test!(test_26, "[true]]]]", vec![("E126", 6, 7)]);
