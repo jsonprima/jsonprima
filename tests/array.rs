@@ -25,3 +25,15 @@ test!(test_13, "[]]", vec![("E126", 2, 3)]);
 test!(test_14, " []]", vec![("E126", 3, 4)]);
 test!(test_15, "[]] ", vec![("E126", 2, 3)]);
 test!(test_16, " []] ", vec![("E126", 3, 4)]);
+
+// Nested arrays
+test!(test_17, "[ [] ]", vec![]);
+test!(test_18, " [ [ [ \n [ ]]]]", vec![]);
+
+// Trailing end-array
+test!(test_19, "[[[]]]] ", vec![("E126", 6, 7)]);
+test!(test_20, " [[[ \n ]]]] ", vec![("E126", 10, 11)]);
+
+// Unterminated nested arrays
+test!(test_21, "[[[[[[[]]]] ", vec![("E127", 11, 12)]);
+test!(test_22, " [[[\n\n[[[[[[ \n ]]]] ", vec![("E127", 19, 20)]);

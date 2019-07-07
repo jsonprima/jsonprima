@@ -4,7 +4,7 @@ use crate::tokens::{ParseTokens, StackTokens, Tokens};
 pub fn validate_end_array(tokens: &mut Tokens) -> Result<(), ()> {
   match &tokens.last_parsed_token {
     Some(last_parsed_token) => match last_parsed_token {
-      ParseTokens::BeginArray => {
+      ParseTokens::BeginArray | ParseTokens::EndArray => {
         match tokens.stack.last() {
           Some(token) => match token {
             StackTokens::BeginArray => {
