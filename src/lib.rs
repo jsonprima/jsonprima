@@ -20,6 +20,9 @@ use validate_number::validate_number;
 mod validate_string;
 use validate_string::validate_string;
 
+mod validate_begin_array;
+use validate_begin_array::validate_begin_array;
+
 // Public exports
 pub use error::ErrorType;
 
@@ -109,6 +112,12 @@ pub fn validate(code: &str) -> Vec<Error> {
         }
       }
 
+      BEGIN_ARRAY => {
+        if validate_begin_array(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
+
       // Invalid literal.
       _ => {
         let err = Error::new(ErrorType::E106, current_index, current_index + 1);
@@ -127,6 +136,9 @@ pub fn validate(code: &str) -> Vec<Error> {
     let err = Error::new(ErrorType::E100, last_parsed_index, last_parsed_index + 1);
     tokens.errors.push(err);
   }
+
+  // TODO: check if there are any tokens left in tokens.stack
+  //       which denotes that some nested structure has not terminated properly.
 
   tokens.errors
 }

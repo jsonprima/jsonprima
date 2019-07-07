@@ -68,3 +68,9 @@ test!(test_53, "true\"\"", vec![("E114", 4, 5)]);
 test!(test_54, "true \"\"", vec![("E114", 5, 6)]);
 test!(test_55, " true \"\"", vec![("E114", 6, 7)]);
 test!(test_56, " \n\r true \t\"\"", vec![("E114", 10, 11)]);
+
+// true begin-array
+test!(test_57, "true[", vec![("E125", 4, 5)]);
+test!(test_58, "true [", vec![("E125", 5, 6)]);
+test!(test_59, " true [", vec![("E125", 6, 7)]);
+test!(test_60, " \n\r true \t[", vec![("E125", 10, 11)]);

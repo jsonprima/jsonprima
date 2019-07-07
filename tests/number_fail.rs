@@ -145,3 +145,9 @@ test!(test_53, "0\"\"", vec![("E114", 1, 2)]);
 test!(test_54, "0 \"\"", vec![("E114", 2, 3)]);
 test!(test_55, " 0 \"\"", vec![("E114", 3, 4)]);
 test!(test_56, " \n\r 0 \t\"\"", vec![("E114", 7, 8)]);
+
+// number begin-array
+test!(test_57, "0[", vec![("E125", 1, 2)]);
+test!(test_58, "0 [", vec![("E125", 2, 3)]);
+test!(test_59, " 0 [", vec![("E125", 3, 4)]);
+test!(test_60, " \n\r 0 \t[", vec![("E125", 7, 8)]);

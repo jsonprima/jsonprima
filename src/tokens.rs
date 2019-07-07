@@ -3,8 +3,8 @@ use crate::error::Error;
 // List of structural tokens defined in RFC 8259
 // and pseudo tokens, such as whitespace characters.
 pub mod general_tokens {
-  // // begin-array = ws %x5B ws ; `[` left square bracket
-  // pub const BEGIN_ARRAY: char = '[';
+  // begin-array = ws %x5B ws ; `[` left square bracket
+  pub const BEGIN_ARRAY: char = '[';
 
   // // begin-object = ws %x7B ws ; `{` left curly bracket
   // pub const BEGIN_OBJECT: char = '{';
@@ -42,7 +42,7 @@ pub mod general_tokens {
 // token and value.
 #[derive(Debug)]
 pub enum ParseTokens {
-  // BeginArray,
+  BeginArray,
   // BeginObject,
   // EndArray,
   // EndObject,
@@ -76,9 +76,9 @@ pub enum ParseTokens {
 // parsed an object member and this token is not valid.
 #[derive(Debug)]
 pub enum StackTokens {
-  // BeginArray,
-// BeginObject,
-// NameSeparator,
+  BeginArray,
+  // BeginObject,
+  // NameSeparator,
 }
 
 // Helper structure to track all the info used by the validator,

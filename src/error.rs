@@ -58,6 +58,9 @@ pub enum ErrorType {
 
   // Invalid Unicode escape sequence in second surrogate pair.
   E119,
+
+  // Illegal begin-array after JSON value.
+  E125,
 }
 
 /// Used to represent the various error variants in this module.
@@ -93,6 +96,7 @@ impl ErrorType {
       ErrorType::E117 => "Invalid character found in Unicode escape sequence.",
       ErrorType::E118 => "Invalid Unicode grapheme in JSON string.",
       ErrorType::E119 => "Invalid Unicode escape sequence in second surrogate pair.",
+      ErrorType::E125 => "Illegal begin-array after JSON value.",
     }
   }
 
@@ -117,6 +121,7 @@ impl ErrorType {
       ErrorType::E117 => "E117",
       ErrorType::E118 => "E118",
       ErrorType::E119 => "E119",
+      ErrorType::E125 => "E125",
     }
   }
 }

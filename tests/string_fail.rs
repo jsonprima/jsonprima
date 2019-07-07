@@ -193,3 +193,9 @@ test!(test_70, "\"\"0", vec![("E109", 2, 3)]);
 test!(test_71, "\"\" 0", vec![("E109", 3, 4)]);
 test!(test_72, " \"\" 0", vec![("E109", 4, 5)]);
 test!(test_73, " \n\r \"\" \t0", vec![("E109", 8, 9)]);
+
+// string begin-array
+test!(test_74, "\"\"[", vec![("E125", 2, 3)]);
+test!(test_75, "\"\" [", vec![("E125", 3, 4)]);
+test!(test_76, " \"\" [", vec![("E125", 4, 5)]);
+test!(test_77, " \n\r \"\" \t[", vec![("E125", 8, 9)]);
