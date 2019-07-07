@@ -61,6 +61,12 @@ pub enum ErrorType {
 
   // Illegal begin-array after JSON value.
   E125,
+
+  // Illegal end-array. No begin-array match.
+  E126,
+
+  // Unterminated array.
+  E127,
 }
 
 /// Used to represent the various error variants in this module.
@@ -97,6 +103,8 @@ impl ErrorType {
       ErrorType::E118 => "Invalid Unicode grapheme in JSON string.",
       ErrorType::E119 => "Invalid Unicode escape sequence in second surrogate pair.",
       ErrorType::E125 => "Illegal begin-array after JSON value.",
+      ErrorType::E126 => "Illegal end-array. No begin-array match.",
+      ErrorType::E127 => "Unterminated array.",
     }
   }
 
@@ -122,6 +130,8 @@ impl ErrorType {
       ErrorType::E118 => "E118",
       ErrorType::E119 => "E119",
       ErrorType::E125 => "E125",
+      ErrorType::E126 => "E126",
+      ErrorType::E127 => "E127",
     }
   }
 }

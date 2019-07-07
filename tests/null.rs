@@ -77,3 +77,9 @@ test!(test_46, "null[", vec![("E125", 4, 5)]);
 test!(test_47, "null [", vec![("E125", 5, 6)]);
 test!(test_48, " null [", vec![("E125", 6, 7)]);
 test!(test_49, " \n\r null \t[", vec![("E125", 10, 11)]);
+
+// null end-array
+test!(test_50, "null]", vec![("E126", 4, 5)]);
+test!(test_51, "null ]", vec![("E126", 5, 6)]);
+test!(test_52, " null ]", vec![("E126", 6, 7)]);
+test!(test_53, " \n\r null \t]", vec![("E126", 10, 11)]);

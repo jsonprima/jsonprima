@@ -9,8 +9,8 @@ pub mod general_tokens {
   // // begin-object = ws %x7B ws ; `{` left curly bracket
   // pub const BEGIN_OBJECT: char = '{';
 
-  // // end-array = ws %x5D ws ; `]` right square bracket
-  // pub const END_ARRAY: char = ']';
+  // end-array = ws %x5D ws ; `]` right square bracket
+  pub const END_ARRAY: char = ']';
 
   // // end-object = ws %x7D ws ; `}` right curly bracket
   // pub const END_OBJECT: char = '}';
@@ -44,7 +44,7 @@ pub mod general_tokens {
 pub enum ParseTokens {
   BeginArray,
   // BeginObject,
-  // EndArray,
+  EndArray,
   // EndObject,
   String,
   // NameSeparator,

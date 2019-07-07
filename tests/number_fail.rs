@@ -151,3 +151,9 @@ test!(test_57, "0[", vec![("E125", 1, 2)]);
 test!(test_58, "0 [", vec![("E125", 2, 3)]);
 test!(test_59, " 0 [", vec![("E125", 3, 4)]);
 test!(test_60, " \n\r 0 \t[", vec![("E125", 7, 8)]);
+
+// number end-array
+test!(test_61, "0]", vec![("E126", 1, 2)]);
+test!(test_62, "0 ]", vec![("E126", 2, 3)]);
+test!(test_63, " 0 ]", vec![("E126", 3, 4)]);
+test!(test_64, " \n\r 0 \t]", vec![("E126", 7, 8)]);

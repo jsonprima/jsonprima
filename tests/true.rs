@@ -74,3 +74,9 @@ test!(test_57, "true[", vec![("E125", 4, 5)]);
 test!(test_58, "true [", vec![("E125", 5, 6)]);
 test!(test_59, " true [", vec![("E125", 6, 7)]);
 test!(test_60, " \n\r true \t[", vec![("E125", 10, 11)]);
+
+// true end-array
+test!(test_61, "true]", vec![("E126", 4, 5)]);
+test!(test_62, "true ]", vec![("E126", 5, 6)]);
+test!(test_63, " true ]", vec![("E126", 6, 7)]);
+test!(test_64, " \n\r true \t]", vec![("E126", 10, 11)]);
