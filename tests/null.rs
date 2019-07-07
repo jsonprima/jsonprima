@@ -65,3 +65,9 @@ test!(test_38, "null0", vec![("E109", 4, 5)]);
 test!(test_39, "null 0", vec![("E109", 5, 6)]);
 test!(test_40, " null 0", vec![("E109", 6, 7)]);
 test!(test_41, " \n\r null \t0", vec![("E109", 10, 11)]);
+
+// null string
+test!(test_42, "null\"\"", vec![("E114", 4, 5)]);
+test!(test_43, "null \"\"", vec![("E114", 5, 6)]);
+test!(test_44, " null \"\"", vec![("E114", 6, 7)]);
+test!(test_45, " \n\r null \t\"\"", vec![("E114", 10, 11)]);
