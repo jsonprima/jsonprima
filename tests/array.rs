@@ -43,3 +43,9 @@ test!(test_23, "[ true ]", vec![]);
 test!(test_24, "[ [ true  ]]", vec![]);
 test!(test_25, "[[[true]", vec![("E127", 7, 8)]);
 test!(test_26, "[true]]]]", vec![("E126", 6, 7)]);
+
+// false as array element
+test!(test_27, "[ false ]", vec![]);
+test!(test_28, "[ [ false  ]]", vec![]);
+test!(test_29, "[[[false]", vec![("E127", 8, 9)]);
+test!(test_30, "[false]]]]", vec![("E126", 7, 8)]);
