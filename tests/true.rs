@@ -62,3 +62,9 @@ test!(test_49, "true0", vec![("E109", 4, 5)]);
 test!(test_50, "true 0", vec![("E109", 5, 6)]);
 test!(test_51, " true 0", vec![("E109", 6, 7)]);
 test!(test_52, " \n\r true \t0", vec![("E109", 10, 11)]);
+
+// true string
+test!(test_53, "true\"\"", vec![("E114", 4, 5)]);
+test!(test_54, "true \"\"", vec![("E114", 5, 6)]);
+test!(test_55, " true \"\"", vec![("E114", 6, 7)]);
+test!(test_56, " \n\r true \t\"\"", vec![("E114", 10, 11)]);
