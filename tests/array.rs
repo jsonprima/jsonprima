@@ -121,3 +121,52 @@ test!(
   "[\"55\", \"55\", \"55\"]]]]",
   vec![("E126", 18, 19)]
 );
+
+// array true
+test!(test_63, "[10]true", vec![("E103", 4, 5)]);
+test!(test_64, "[10] true", vec![("E103", 5, 6)]);
+test!(test_65, " [10] true", vec![("E103", 6, 7)]);
+test!(test_66, " \n\r [10] \ttrue", vec![("E103", 10, 11)]);
+
+// array <any_token>
+test!(test_67, "[10]w", vec![("E106", 4, 5)]);
+test!(test_68, "[10] (", vec![("E106", 5, 6)]);
+test!(test_69, " [10] ***", vec![("E106", 6, 7)]);
+test!(test_70, " \n\r [10] \tq", vec![("E106", 10, 11)]);
+test!(test_71, " [10]😋", vec![("E106", 5, 6)]);
+
+// array false
+test!(test_72, "[10]false", vec![("E107", 4, 5)]);
+test!(test_73, "[10] false", vec![("E107", 5, 6)]);
+test!(test_74, " [10] false", vec![("E107", 6, 7)]);
+test!(test_75, " \n\r [10] \tfalse", vec![("E107", 10, 11)]);
+
+// array null
+test!(test_76, "[10]null", vec![("E108", 4, 5)]);
+test!(test_77, "[10] null", vec![("E108", 5, 6)]);
+test!(test_78, " [10] null", vec![("E108", 6, 7)]);
+test!(test_79, " \n\r [10] \r\nnull", vec![("E108", 11, 12)]);
+
+// array number
+test!(test_80, "[10]0", vec![("E109", 4, 5)]);
+test!(test_81, "[10] 0", vec![("E109", 5, 6)]);
+test!(test_82, " [10] 0", vec![("E109", 6, 7)]);
+test!(test_83, " \n\r [10] \t0", vec![("E109", 10, 11)]);
+
+// array string
+test!(test_84, "[10]\"\"", vec![("E114", 4, 5)]);
+test!(test_85, "[10] \"\"", vec![("E114", 5, 6)]);
+test!(test_86, " [10] \"\"", vec![("E114", 6, 7)]);
+test!(test_87, " \n\r [10] \t\"\"", vec![("E114", 10, 11)]);
+
+// array array
+test!(test_88, "[10][]", vec![("E125", 4, 5)]);
+test!(test_89, "[10] []", vec![("E125", 5, 6)]);
+test!(test_90, " [10] []", vec![("E125", 6, 7)]);
+test!(test_91, " \n\r [10] \t[]", vec![("E125", 10, 11)]);
+
+// array value-separator
+test!(test_92, "[10],", vec![("E124", 4, 5)]);
+test!(test_93, "[10] ,", vec![("E124", 5, 6)]);
+test!(test_94, " [10] ,", vec![("E124", 6, 7)]);
+test!(test_95, " \n\r [10] \t,", vec![("E124", 10, 11)]);
