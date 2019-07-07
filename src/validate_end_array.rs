@@ -7,7 +7,8 @@ pub fn validate_end_array(tokens: &mut Tokens) -> Result<(), ()> {
       ParseTokens::BeginArray
       | ParseTokens::EndArray
       | ParseTokens::True
-      | ParseTokens::False => {
+      | ParseTokens::False
+      | ParseTokens::Null => {
         match tokens.stack.last() {
           Some(token) => match token {
             StackTokens::BeginArray => {
