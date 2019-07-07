@@ -139,3 +139,9 @@ test!(test_49, "0null", vec![("E108", 1, 2)]);
 test!(test_50, "0 null", vec![("E108", 2, 3)]);
 test!(test_51, " 0 null", vec![("E108", 3, 4)]);
 test!(test_52, " \n\r 0 \tnull", vec![("E108", 7, 8)]);
+
+// number string
+test!(test_53, "0\"\"", vec![("E114", 1, 2)]);
+test!(test_54, "0 \"\"", vec![("E114", 2, 3)]);
+test!(test_55, " 0 \"\"", vec![("E114", 3, 4)]);
+test!(test_56, " \n\r 0 \t\"\"", vec![("E114", 7, 8)]);
