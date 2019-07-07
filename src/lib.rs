@@ -17,6 +17,9 @@ use validate_null::validate_null;
 mod validate_number;
 use validate_number::validate_number;
 
+mod validate_string;
+use validate_string::validate_string;
+
 // Public exports
 pub use error::ErrorType;
 
@@ -95,6 +98,13 @@ pub fn validate(code: &str) -> Vec<Error> {
       // Parse JSON number.
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '-' => {
         if validate_number(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
+
+      // Parse JSON String
+      QUOTATION_MARK => {
+        if validate_string(&mut tokens).is_err() {
           return tokens.errors;
         }
       }

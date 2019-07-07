@@ -15,8 +15,8 @@ pub mod general_tokens {
   // // end-object = ws %x7D ws ; `}` right curly bracket
   // pub const END_OBJECT: char = '}';
 
-  // // quotation-mark = ws %x22 ws ; `"` quotation-mark
-  // pub const QUOTATION_MARK: char = '"';
+  // quotation-mark = ws %x22 ws ; `"` quotation-mark
+  pub const QUOTATION_MARK: char = '"';
 
   // // name-separator = ws %x3A ws ; `:` colon
   // pub const NAME_SEPARATOR: char = ':';
@@ -46,7 +46,7 @@ pub enum ParseTokens {
   // BeginObject,
   // EndArray,
   // EndObject,
-  // String,
+  String,
   // NameSeparator,
   // ValueSeparator,
   True,

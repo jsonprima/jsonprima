@@ -8,6 +8,9 @@ pub enum ErrorType {
   /// Empty JSON document.
   E100,
 
+  /// Raw use of control characters in JSON string.
+  E101,
+
   /// Illegal character "t" after structural token. Expected comma or colon.
   E103,
 
@@ -40,6 +43,21 @@ pub enum ErrorType {
 
   /// Could not parse JSON number.
   E113,
+
+  /// Illegal string after structural token. Expected comma or colon.
+  E114,
+
+  // Invalid escape character in JSON string.
+  E116,
+
+  // Invalid character found in Unicode escape sequence.
+  E117,
+
+  // Invalid Unicode grapheme in JSON string.
+  E118,
+
+  // Invalid Unicode escape sequence in second surrogate pair.
+  E119,
 }
 
 /// Used to represent the various error variants in this module.
@@ -48,6 +66,7 @@ impl ErrorType {
   pub fn description(&self) -> &str {
     match self {
       ErrorType::E100 => "Empty JSON document.",
+      ErrorType::E101 => "Raw use of control characters in JSON string.",
       ErrorType::E103 => {
         "Illegal character \"t\" after structural token. Expected comma or colon."
       }
@@ -67,6 +86,13 @@ impl ErrorType {
       ErrorType::E111 => "Numbers cannot contain leading zeros.",
       ErrorType::E112 => "Could not parse out of range JSON number.",
       ErrorType::E113 => "Could not parse JSON number.",
+      ErrorType::E114 => {
+        "Illegal string after structural token. Expected comma or colon."
+      }
+      ErrorType::E116 => "Invalid escape character in JSON string.",
+      ErrorType::E117 => "Invalid character found in Unicode escape sequence.",
+      ErrorType::E118 => "Invalid Unicode grapheme in JSON string.",
+      ErrorType::E119 => "Invalid Unicode escape sequence in second surrogate pair.",
     }
   }
 
@@ -74,6 +100,7 @@ impl ErrorType {
   pub fn code(&self) -> &str {
     match self {
       ErrorType::E100 => "E100",
+      ErrorType::E101 => "E101",
       ErrorType::E103 => "E103",
       ErrorType::E104 => "E104",
       ErrorType::E105 => "E105",
@@ -85,6 +112,11 @@ impl ErrorType {
       ErrorType::E111 => "E111",
       ErrorType::E112 => "E112",
       ErrorType::E113 => "E113",
+      ErrorType::E114 => "E114",
+      ErrorType::E116 => "E116",
+      ErrorType::E117 => "E117",
+      ErrorType::E118 => "E118",
+      ErrorType::E119 => "E119",
     }
   }
 }
