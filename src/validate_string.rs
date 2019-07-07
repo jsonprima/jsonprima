@@ -278,6 +278,8 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
 pub fn validate_string(tokens: &mut Tokens) -> Result<(), ()> {
   match &tokens.last_parsed_token {
     Some(last_parsed_token) => match last_parsed_token {
+      ParseTokens::BeginArray => validate(tokens),
+
       // Illegal string after structural token. Expected comma or colon.
       _ => {
         let last_parsed_index = tokens.current_iterator_index;

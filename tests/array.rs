@@ -61,3 +61,9 @@ test!(test_35, "[ 12.9 ]", vec![]);
 test!(test_36, "[ [ 12.9  ]]", vec![]);
 test!(test_37, "[[[12.9]", vec![("E127", 7, 8)]);
 test!(test_38, "[12.9]]]]", vec![("E126", 6, 7)]);
+
+// String as array element
+test!(test_39, "[ \"55\" ]", vec![]);
+test!(test_40, "[ [ \"55\"  ]]", vec![]);
+test!(test_41, "[[[\"55\"]", vec![("E127", 7, 8)]);
+test!(test_42, "[\"55\"]]]]", vec![("E126", 6, 7)]);
