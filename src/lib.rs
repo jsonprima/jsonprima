@@ -1,9 +1,9 @@
 mod error;
-mod tokens;
+mod json;
 
 use error::Error;
-use tokens::general_tokens::*;
-use tokens::{StackTokens, Tokens};
+use json::general_tokens::*;
+use json::{StackTokens, JSON};
 
 mod validate_true;
 use validate_true::validate_true;
@@ -67,23 +67,23 @@ pub use error::ErrorType;
 /// println!("{:#?}", errors); // => [("E104", 0, 4)]
 /// ```
 pub fn validate(code: &str) -> Vec<Error> {
-  let mut tokens = Tokens::new(code.chars().enumerate().peekable());
+  let mut json_document = JSON::new(code.chars().enumerate().peekable());
 
-  if tokens
+  if json_document
     .iterator
     .peek()
     .filter(|(_, current_character)| current_character == &'\u{feff}')
     .is_some()
   {
     // Ignore byte order mark.
-    tokens.iterator.next();
+    json_document.iterator.next();
   }
 
   // Iterate over all characters and return a Result if there is any error.
-  while let Some((current_index, current_character)) = tokens.iterator.next() {
-    // Save the current index and character to tokens struct.
-    tokens.current_iterator_index = current_index;
-    tokens.current_iterator_character = current_character;
+  while let Some((current_index, current_character)) = json_document.iterator.next() {
+    // Save the current index and character to json_document struct.
+    json_document.current_iterator_index = current_index;
+    json_document.current_iterator_character = current_character;
 
     // Match the token type of the character (begin-array, horizontal-tab, etc).
     // We check the first character of a JSON value to determine
@@ -94,120 +94,120 @@ pub fn validate(code: &str) -> Vec<Error> {
 
       // Character `t` is the first character of the `true` literal name.
       't' => {
-        if validate_true(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_true(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       // Character `f` is the first character of the `false` literal name.
       'f' => {
-        if validate_false(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_false(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       // Character `n` is the first character of the `null` literal name.
       'n' => {
-        if validate_null(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_null(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       // Parse JSON number.
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '-' => {
-        if validate_number(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_number(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       // Parse JSON String
       QUOTATION_MARK => {
-        if validate_string(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_string(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       BEGIN_ARRAY => {
-        if validate_begin_array(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_begin_array(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       END_ARRAY => {
-        if validate_end_array(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_end_array(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       VALUE_SEPARATOR => {
-        if validate_value_separator(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_value_separator(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       BEGIN_OBJECT => {
-        if validate_begin_object(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_begin_object(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       END_OBJECT => {
-        if validate_end_object(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_end_object(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       NAME_SEPARATOR => {
-        if validate_name_separator(&mut tokens).is_err() {
-          return tokens.errors;
+        if validate_name_separator(&mut json_document).is_err() {
+          return json_document.errors;
         }
       }
 
       // Invalid literal.
       _ => {
         let err = Error::new(ErrorType::E106, current_index, current_index + 1);
-        tokens.errors.push(err);
+        json_document.errors.push(err);
 
-        return tokens.errors;
+        return json_document.errors;
       }
     }
   }
 
   // In case we have not parsed any JSON value,
   // return empty JSON error.
-  if tokens.last_parsed_token.is_none() {
-    let last_parsed_index = tokens.current_iterator_index;
+  if json_document.last_parsed_token.is_none() {
+    let last_parsed_index = json_document.current_iterator_index;
     // Empty JSON document.
     let err = Error::new(ErrorType::E100, last_parsed_index, last_parsed_index + 1);
-    tokens.errors.push(err);
+    json_document.errors.push(err);
   }
 
-  // Check if there are any tokens left in tokens.stack which denotes that some
+  // Check if there are any json_document left in json_document.stack which denotes that some
   // nested structure has not terminated properly.
-  if let Some(token) = tokens.stack.pop() {
+  if let Some(token) = json_document.stack.pop() {
     match token {
       StackTokens::BeginArray => {
         // Unterminated array.
-        let last_parsed_index = tokens.current_iterator_index;
+        let last_parsed_index = json_document.current_iterator_index;
         let err = Error::new(ErrorType::E127, last_parsed_index, last_parsed_index + 1);
-        tokens.errors.push(err);
+        json_document.errors.push(err);
       }
 
       StackTokens::BeginObject => {
         // Unterminated object.
-        let last_parsed_index = tokens.current_iterator_index;
+        let last_parsed_index = json_document.current_iterator_index;
         let err = Error::new(ErrorType::E128, last_parsed_index, last_parsed_index + 1);
-        tokens.errors.push(err);
+        json_document.errors.push(err);
       }
 
       StackTokens::NameSeparator => {
         // Invalid object member.
-        let last_parsed_index = tokens.current_iterator_index;
+        let last_parsed_index = json_document.current_iterator_index;
         let err = Error::new(ErrorType::E141, last_parsed_index, last_parsed_index + 1);
-        tokens.errors.push(err);
+        json_document.errors.push(err);
       }
     }
   }
 
-  tokens.errors
+  json_document.errors
 }

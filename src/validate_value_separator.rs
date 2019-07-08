@@ -1,8 +1,8 @@
 use crate::error::{Error, ErrorType};
-use crate::tokens::{ParseTokens, StackTokens, Tokens};
+use crate::json::{ParseTokens, StackTokens, JSON};
 
-pub fn validate_value_separator(tokens: &mut Tokens) -> Result<(), ()> {
-  match &tokens.last_parsed_token {
+pub fn validate_value_separator(json_document: &mut JSON) -> Result<(), ()> {
+  match &json_document.last_parsed_token {
     Some(token) => {
       match token {
         ParseTokens::Null
@@ -10,25 +10,25 @@ pub fn validate_value_separator(tokens: &mut Tokens) -> Result<(), ()> {
         | ParseTokens::True
         | ParseTokens::False
         | ParseTokens::String => {
-          if tokens.root_value_parsed && tokens.stack.is_empty() {
+          if json_document.root_value_parsed && json_document.stack.is_empty() {
             // Invalid use of comma after document root value.
-            let last_parsed_index = tokens.current_iterator_index;
+            let last_parsed_index = json_document.current_iterator_index;
             let err =
               Error::new(ErrorType::E124, last_parsed_index, last_parsed_index + 1);
-            tokens.errors.push(err);
+            json_document.errors.push(err);
 
             Err(())
           } else {
-            tokens.last_parsed_token = Some(ParseTokens::ValueSeparator);
+            json_document.last_parsed_token = Some(ParseTokens::ValueSeparator);
             Ok(())
           }
         }
 
         ParseTokens::EndArray | ParseTokens::EndObject => {
-          if !tokens.stack.is_empty() {
-            match tokens.stack.last().unwrap() {
+          if !json_document.stack.is_empty() {
+            match json_document.stack.last().unwrap() {
               StackTokens::BeginArray | StackTokens::BeginObject => {
-                tokens.last_parsed_token = Some(ParseTokens::ValueSeparator);
+                json_document.last_parsed_token = Some(ParseTokens::ValueSeparator);
                 Ok(())
               }
 
@@ -36,10 +36,10 @@ pub fn validate_value_separator(tokens: &mut Tokens) -> Result<(), ()> {
             }
           } else {
             // Invalid use of comma after document root value.
-            let last_parsed_index = tokens.current_iterator_index;
+            let last_parsed_index = json_document.current_iterator_index;
             let err =
               Error::new(ErrorType::E124, last_parsed_index, last_parsed_index + 1);
-            tokens.errors.push(err);
+            json_document.errors.push(err);
 
             Err(())
           }
@@ -47,9 +47,9 @@ pub fn validate_value_separator(tokens: &mut Tokens) -> Result<(), ()> {
 
         _ => {
           // Unexpected comma after structural token.
-          let last_parsed_index = tokens.current_iterator_index;
+          let last_parsed_index = json_document.current_iterator_index;
           let err = Error::new(ErrorType::E123, last_parsed_index, last_parsed_index + 1);
-          tokens.errors.push(err);
+          json_document.errors.push(err);
 
           Err(())
         }
@@ -58,9 +58,9 @@ pub fn validate_value_separator(tokens: &mut Tokens) -> Result<(), ()> {
 
     None => {
       // Unexpected comma at the start of JSON document.
-      let last_parsed_index = tokens.current_iterator_index;
+      let last_parsed_index = json_document.current_iterator_index;
       let err = Error::new(ErrorType::E122, last_parsed_index, last_parsed_index + 1);
-      tokens.errors.push(err);
+      json_document.errors.push(err);
 
       Err(())
     }

@@ -1,11 +1,11 @@
 use crate::error::{Error, ErrorType};
-use crate::tokens::{ParseTokens, StackTokens, Tokens};
+use crate::json::{ParseTokens, StackTokens, JSON};
 
-// Helper macro to test if the next entry in tokens.iterator
+// Helper macro to test if the next entry in json_document.iterator
 // match expected_character.
 macro_rules! next {
-  ($tokens:ident, $expected_character:expr, $index_start:expr) => {
-    let result = $tokens
+  ($json_document:ident, $expected_character:expr, $index_start:expr) => {
+    let result = $json_document
       .iterator
       .next()
       .ok_or_else(|| {
@@ -13,24 +13,24 @@ macro_rules! next {
         let err = Error::new(
           ErrorType::E104,
           $index_start,
-          $tokens.current_iterator_index + 1,
+          $json_document.current_iterator_index + 1,
         );
 
-        $tokens.errors.push(err);
+        $json_document.errors.push(err);
         ()
       })
       .and_then(|(next_index, next_character)| {
         if next_character != $expected_character {
           // Invalid character in literal name.
           let err = Error::new(ErrorType::E105, $index_start, next_index + 1);
-          $tokens.errors.push(err);
-          $tokens.current_iterator_index = next_index;
-          $tokens.current_iterator_character = next_character;
+          $json_document.errors.push(err);
+          $json_document.current_iterator_index = next_index;
+          $json_document.current_iterator_character = next_character;
 
           Err(())
         } else {
-          $tokens.current_iterator_index = next_index;
-          $tokens.current_iterator_character = next_character;
+          $json_document.current_iterator_index = next_index;
+          $json_document.current_iterator_character = next_character;
           Ok(())
         }
       });
@@ -41,7 +41,7 @@ macro_rules! next {
   };
 }
 
-fn validate(tokens: &mut Tokens) -> Result<(), ()> {
+fn validate(json_document: &mut JSON) -> Result<(), ()> {
   // Save the position of the first character.
   // This will help us set a range that will highlight the whole incorrect value
   // in case of an error.
@@ -54,66 +54,66 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
   // let errors = jsonprima::validate(&text);
   // println!("{:#?}", errors); // => [("E104", 0, 5)]
   // ```
-  let index_start = tokens.current_iterator_index;
+  let index_start = json_document.current_iterator_index;
 
-  next!(tokens, 'u', index_start);
-  next!(tokens, 'l', index_start);
-  next!(tokens, 'l', index_start);
+  next!(json_document, 'u', index_start);
+  next!(json_document, 'l', index_start);
+  next!(json_document, 'l', index_start);
 
   // If none of the macro invocations returned error,
   // we have successfully validate the value.
-  tokens.last_parsed_token = Some(ParseTokens::Null);
+  json_document.last_parsed_token = Some(ParseTokens::Null);
 
   Ok(())
 }
 
-pub fn validate_null(tokens: &mut Tokens) -> Result<(), ()> {
-  match &tokens.last_parsed_token {
+pub fn validate_null(json_document: &mut JSON) -> Result<(), ()> {
+  match &json_document.last_parsed_token {
     Some(last_parsed_token) => match last_parsed_token {
-      ParseTokens::BeginArray => validate(tokens),
+      ParseTokens::BeginArray => validate(json_document),
 
       ParseTokens::ValueSeparator => {
-        if tokens.stack.last().unwrap() == &StackTokens::BeginObject {
+        if json_document.stack.last().unwrap() == &StackTokens::BeginObject {
           // Invalid use of null as object name.
-          let last_parsed_index = tokens.current_iterator_index;
+          let last_parsed_index = json_document.current_iterator_index;
           let err = Error::new(ErrorType::E140, last_parsed_index, last_parsed_index + 1);
-          tokens.errors.push(err);
+          json_document.errors.push(err);
 
           Err(())
         } else {
-          validate(tokens)
+          validate(json_document)
         }
       }
 
       ParseTokens::BeginObject => {
         // Invalid use of null as object name.
-        let last_parsed_index = tokens.current_iterator_index;
+        let last_parsed_index = json_document.current_iterator_index;
         let err = Error::new(ErrorType::E140, last_parsed_index, last_parsed_index + 1);
-        tokens.errors.push(err);
+        json_document.errors.push(err);
 
         Err(())
       }
 
       ParseTokens::NameSeparator => {
-        tokens.stack.pop();
-        tokens.object_has_valid_member = true;
+        json_document.stack.pop();
+        json_document.object_has_valid_member = true;
 
-        validate(tokens)
+        validate(json_document)
       }
 
       // Illegal character "n" after structural token. Expected comma or colon.
       _ => {
-        let last_parsed_index = tokens.current_iterator_index;
+        let last_parsed_index = json_document.current_iterator_index;
         let err = Error::new(ErrorType::E108, last_parsed_index, last_parsed_index + 1);
-        tokens.errors.push(err);
+        json_document.errors.push(err);
 
         Err(())
       }
     },
 
     None => {
-      tokens.root_value_parsed = true;
-      validate(tokens)
+      json_document.root_value_parsed = true;
+      validate(json_document)
     }
   }
 }

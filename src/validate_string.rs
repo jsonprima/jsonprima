@@ -1,39 +1,45 @@
 use crate::error::{Error, ErrorType};
-use crate::tokens::{general_tokens::*, ParseTokens, StackTokens, Tokens};
+use crate::json::{general_tokens::*, ParseTokens, StackTokens, JSON};
 
-// Given the tokens structure where the iterator index is in the
+// Given the json_document structure where the iterator index is in the
 // start of a Unicode escape sequence values, i.e. X in \uXXXX,
 // get the decimal representation of the escape sequence.
-fn parse_escape_sequence(tokens: &mut Tokens, index_start: usize) -> Result<u32, Error> {
+fn parse_escape_sequence(
+  json_document: &mut JSON,
+  index_start: usize,
+) -> Result<u32, Error> {
   // The decimal representation of the Unicode escape sequence.
   let mut uffff: u32 = 0;
 
   // Unicode escape sequence is defined
   // as \uxxxx, where x is ASCII Hex value.
   for _ in 0..4 {
-    let next = tokens.iterator.next();
+    let next = json_document.iterator.next();
 
     if next.is_none() {
       return Err(Error::new(
         ErrorType::E104,
         index_start,
-        tokens.current_iterator_index + 1,
+        json_document.current_iterator_index + 1,
       ));
     }
 
-    tokens.current_iterator_index = next.unwrap().0;
-    tokens.current_iterator_character = next.unwrap().1;
+    json_document.current_iterator_index = next.unwrap().0;
+    json_document.current_iterator_character = next.unwrap().1;
 
-    if !tokens.current_iterator_character.is_ascii_hexdigit() {
+    if !json_document.current_iterator_character.is_ascii_hexdigit() {
       // Invalid character found in Unicode escape sequence.
       return Err(Error::new(
         ErrorType::E117,
         index_start,
-        tokens.current_iterator_index + 1,
+        json_document.current_iterator_index + 1,
       ));
     }
 
-    let hex = tokens.current_iterator_character.to_digit(16).unwrap();
+    let hex = json_document
+      .current_iterator_character
+      .to_digit(16)
+      .unwrap();
     uffff = uffff * 16 + hex
   }
 
@@ -41,7 +47,7 @@ fn parse_escape_sequence(tokens: &mut Tokens, index_start: usize) -> Result<u32,
   Ok(uffff)
 }
 
-fn validate(tokens: &mut Tokens) -> Result<(), ()> {
+fn validate(json_document: &mut JSON) -> Result<(), ()> {
   // Save the position of the first character.
   // This will help us set a range that will highlight the whole incorrect value
   // in case of an error.
@@ -54,17 +60,17 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
   // let errors = jsonprima::validate(&text);
   // println!("{:#?}", errors); // => [("E104", 0, 13)]
   // ```
-  let index_start = tokens.current_iterator_index;
+  let index_start = json_document.current_iterator_index;
 
   // Parse all characters as string values until quotation mark.
   loop {
-    let next = tokens.iterator.next();
+    let next = json_document.iterator.next();
 
     // End of string reached. We have successfully parse the JSON string.
     if next.filter(|(_, character)| *character == '"').is_some() {
-      tokens.current_iterator_index = next.unwrap().0;
-      tokens.current_iterator_character = '"';
-      tokens.last_parsed_token = Some(ParseTokens::String);
+      json_document.current_iterator_index = next.unwrap().0;
+      json_document.current_iterator_character = '"';
+      json_document.last_parsed_token = Some(ParseTokens::String);
       break Ok(());
     }
 
@@ -74,40 +80,40 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
       let err = Error::new(
         ErrorType::E104,
         index_start,
-        tokens.current_iterator_index + 1,
+        json_document.current_iterator_index + 1,
       );
-      tokens.errors.push(err);
+      json_document.errors.push(err);
 
       break Err(());
     }
 
     // In case the character is not closing quotation mark and exists,
     // validate it based on the rules of RFC 8259.
-    tokens.current_iterator_index = next.unwrap().0;
-    tokens.current_iterator_character = next.unwrap().1;
+    json_document.current_iterator_index = next.unwrap().0;
+    json_document.current_iterator_character = next.unwrap().1;
 
-    match tokens.current_iterator_character {
+    match json_document.current_iterator_character {
       '\\' => {
         // Start of escape character.
         // Read the next character to find out more.
-        let next = tokens.iterator.next();
+        let next = json_document.iterator.next();
 
         if next.is_none() {
           // No more characters to parse.
           let err = Error::new(
             ErrorType::E104,
             index_start,
-            tokens.current_iterator_index + 1,
+            json_document.current_iterator_index + 1,
           );
-          tokens.errors.push(err);
+          json_document.errors.push(err);
 
           break Err(());
         }
 
-        tokens.current_iterator_index = next.unwrap().0;
-        tokens.current_iterator_character = next.unwrap().1;
+        json_document.current_iterator_index = next.unwrap().0;
+        json_document.current_iterator_character = next.unwrap().1;
 
-        match tokens.current_iterator_character {
+        match json_document.current_iterator_character {
           // Valid escape character sequence.
           '/' | '\\' | '"' | 'b' | 'f' | 'n' | 'r' | 't' => continue,
 
@@ -124,12 +130,12 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
             // surrogate pair.
             let high_surrogate: u32;
 
-            match parse_escape_sequence(tokens, index_start) {
+            match parse_escape_sequence(json_document, index_start) {
               Ok(uffff) => {
                 high_surrogate = uffff;
               }
               Err(err) => {
-                tokens.errors.push(err);
+                json_document.errors.push(err);
                 break Err(());
               }
             };
@@ -147,68 +153,68 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
 
                 // Start parsing the next Unicode escape sequence,
                 // as low surrogate pair.
-                let next = tokens.iterator.next();
+                let next = json_document.iterator.next();
                 if next.is_none() {
                   // No more characters to parse.
                   let err = Error::new(
                     ErrorType::E119,
                     index_start,
-                    tokens.current_iterator_index + 1,
+                    json_document.current_iterator_index + 1,
                   );
-                  tokens.errors.push(err);
+                  json_document.errors.push(err);
 
                   break Err(());
                 }
 
-                tokens.current_iterator_index = next.unwrap().0;
-                tokens.current_iterator_character = next.unwrap().1;
+                json_document.current_iterator_index = next.unwrap().0;
+                json_document.current_iterator_character = next.unwrap().1;
 
-                if tokens.current_iterator_character != '\\' {
+                if json_document.current_iterator_character != '\\' {
                   let err = Error::new(
                     ErrorType::E119,
                     index_start,
-                    tokens.current_iterator_index + 1,
+                    json_document.current_iterator_index + 1,
                   );
-                  tokens.errors.push(err);
+                  json_document.errors.push(err);
 
                   break Err(());
                 }
 
-                let next = tokens.iterator.next();
+                let next = json_document.iterator.next();
                 if next.is_none() {
                   // No more characters to parse.
                   let err = Error::new(
                     ErrorType::E119,
                     index_start,
-                    tokens.current_iterator_index + 1,
+                    json_document.current_iterator_index + 1,
                   );
-                  tokens.errors.push(err);
+                  json_document.errors.push(err);
 
                   break Err(());
                 }
 
-                tokens.current_iterator_index = next.unwrap().0;
-                tokens.current_iterator_character = next.unwrap().1;
+                json_document.current_iterator_index = next.unwrap().0;
+                json_document.current_iterator_character = next.unwrap().1;
 
-                if tokens.current_iterator_character != 'u' {
+                if json_document.current_iterator_character != 'u' {
                   let err = Error::new(
                     ErrorType::E119,
                     index_start,
-                    tokens.current_iterator_index + 1,
+                    json_document.current_iterator_index + 1,
                   );
-                  tokens.errors.push(err);
+                  json_document.errors.push(err);
 
                   break Err(());
                 }
 
                 let low_surrogate: u32;
 
-                match parse_escape_sequence(tokens, index_start) {
+                match parse_escape_sequence(json_document, index_start) {
                   Ok(uffff) => {
                     low_surrogate = uffff;
                   }
                   Err(err) => {
-                    tokens.errors.push(err);
+                    json_document.errors.push(err);
                     break Err(());
                   }
                 };
@@ -221,9 +227,9 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
                   let err = Error::new(
                     ErrorType::E118,
                     index_start,
-                    tokens.current_iterator_index + 1,
+                    json_document.current_iterator_index + 1,
                   );
-                  tokens.errors.push(err);
+                  json_document.errors.push(err);
 
                   break Err(());
                 }
@@ -236,9 +242,9 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
             let err = Error::new(
               ErrorType::E101,
               index_start,
-              tokens.current_iterator_index + 1,
+              json_document.current_iterator_index + 1,
             );
-            tokens.errors.push(err);
+            json_document.errors.push(err);
 
             break Err(());
           }
@@ -248,9 +254,9 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
             let err = Error::new(
               ErrorType::E116,
               index_start,
-              tokens.current_iterator_index + 1,
+              json_document.current_iterator_index + 1,
             );
-            tokens.errors.push(err);
+            json_document.errors.push(err);
 
             break Err(());
           }
@@ -262,9 +268,9 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
         let err = Error::new(
           ErrorType::E101,
           index_start,
-          tokens.current_iterator_index + 1,
+          json_document.current_iterator_index + 1,
         );
-        tokens.errors.push(err);
+        json_document.errors.push(err);
 
         break Err(());
       }
@@ -275,44 +281,44 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
   }
 }
 
-pub fn validate_string(tokens: &mut Tokens) -> Result<(), ()> {
-  match &tokens.last_parsed_token {
+pub fn validate_string(json_document: &mut JSON) -> Result<(), ()> {
+  match &json_document.last_parsed_token {
     Some(last_parsed_token) => match last_parsed_token {
       ParseTokens::BeginObject
       | ParseTokens::ValueSeparator
       | ParseTokens::NameSeparator
-      | ParseTokens::BeginArray => match tokens.stack.last() {
+      | ParseTokens::BeginArray => match json_document.stack.last() {
         Some(token) => match token {
           StackTokens::NameSeparator => {
-            tokens.stack.pop();
-            tokens.object_has_valid_member = true;
-            validate(tokens)
+            json_document.stack.pop();
+            json_document.object_has_valid_member = true;
+            validate(json_document)
           }
 
           StackTokens::BeginObject => {
-            tokens.object_has_valid_member = false;
-            validate(tokens)
+            json_document.object_has_valid_member = false;
+            validate(json_document)
           }
 
-          StackTokens::BeginArray => validate(tokens),
+          StackTokens::BeginArray => validate(json_document),
         },
 
-        None => validate(tokens),
+        None => validate(json_document),
       },
 
       // Illegal string after structural token. Expected comma or colon.
       _ => {
-        let last_parsed_index = tokens.current_iterator_index;
+        let last_parsed_index = json_document.current_iterator_index;
         let err = Error::new(ErrorType::E114, last_parsed_index, last_parsed_index + 1);
-        tokens.errors.push(err);
+        json_document.errors.push(err);
 
         Err(())
       }
     },
 
     None => {
-      tokens.root_value_parsed = true;
-      validate(tokens)
+      json_document.root_value_parsed = true;
+      validate(json_document)
     }
   }
 }

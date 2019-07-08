@@ -90,7 +90,7 @@ pub enum StackTokens {
 // This is not idiomatic Rust and we might reconsider our approach in
 // future releases, even more if the size of this library starts to
 // increase.
-pub struct Tokens<'a> {
+pub struct JSON<'a> {
   // The last parsed JSON token.
   // In case the JSON document is empty, the value is None.
   pub last_parsed_token: Option<ParseTokens>,
@@ -133,12 +133,12 @@ pub struct Tokens<'a> {
   pub errors: Vec<Error>,
 }
 
-impl<'a> Tokens<'a> {
+impl<'a> JSON<'a> {
   // Returns a new Token instance.
   pub fn new(
     iterator: std::iter::Peekable<std::iter::Enumerate<std::str::Chars<'a>>>,
-  ) -> Tokens<'a> {
-    Tokens {
+  ) -> JSON<'a> {
+    JSON {
       last_parsed_token: None,
       root_value_parsed: false,
       stack: Vec::new(),
