@@ -1,7 +1,11 @@
 use crate::error::{Error, ErrorType};
 use crate::json::{ParseTokens, StackTokens, JSON};
+use crate::scanner::Scanner;
 
-pub fn validate_end_array(json_document: &mut JSON) -> Result<(), ()> {
+pub fn validate_end_array(
+  json_document: &mut JSON,
+  scanner: &mut Scanner,
+) -> Result<(), ()> {
   match &json_document.last_parsed_token {
     Some(last_parsed_token) => match last_parsed_token {
       ParseTokens::BeginArray
@@ -22,7 +26,7 @@ pub fn validate_end_array(json_document: &mut JSON) -> Result<(), ()> {
 
             _ => {
               // Illegal end-array. No begin-array match.
-              let last_parsed_index = json_document.iterator.current().index;
+              let last_parsed_index = scanner.current().index;
               let err =
                 Error::new(ErrorType::E126, last_parsed_index, last_parsed_index + 1);
               json_document.errors.push(err);
@@ -33,7 +37,7 @@ pub fn validate_end_array(json_document: &mut JSON) -> Result<(), ()> {
 
           None => {
             // Illegal end-array. No begin-array match.
-            let last_parsed_index = json_document.iterator.current().index;
+            let last_parsed_index = scanner.current().index;
             let err =
               Error::new(ErrorType::E126, last_parsed_index, last_parsed_index + 1);
             json_document.errors.push(err);
@@ -45,7 +49,7 @@ pub fn validate_end_array(json_document: &mut JSON) -> Result<(), ()> {
 
       ParseTokens::ValueSeparator => {
         // Illegal end-array after comma.
-        let last_parsed_index = json_document.iterator.current().index;
+        let last_parsed_index = scanner.current().index;
         let err = Error::new(ErrorType::E129, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -54,7 +58,7 @@ pub fn validate_end_array(json_document: &mut JSON) -> Result<(), ()> {
 
       ParseTokens::NameSeparator => {
         // Illegal end-array after colon.
-        let last_parsed_index = json_document.iterator.current().index;
+        let last_parsed_index = scanner.current().index;
         let err = Error::new(ErrorType::E133, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -63,7 +67,7 @@ pub fn validate_end_array(json_document: &mut JSON) -> Result<(), ()> {
 
       _ => {
         // Illegal end-array. No begin-array match.
-        let last_parsed_index = json_document.iterator.current().index;
+        let last_parsed_index = scanner.current().index;
         let err = Error::new(ErrorType::E126, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -73,7 +77,7 @@ pub fn validate_end_array(json_document: &mut JSON) -> Result<(), ()> {
 
     None => {
       // Illegal end-array. No begin-array match.
-      let last_parsed_index = json_document.iterator.current().index;
+      let last_parsed_index = scanner.current().index;
       let err = Error::new(ErrorType::E126, last_parsed_index, last_parsed_index + 1);
       json_document.errors.push(err);
 

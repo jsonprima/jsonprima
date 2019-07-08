@@ -90,7 +90,7 @@ pub enum StackTokens {
 // This is not idiomatic Rust and we might reconsider our approach in
 // future releases, even more if the size of this library starts to
 // increase.
-pub struct JSON<'a> {
+pub struct JSON {
   // The last parsed JSON token.
   // In case the JSON document is empty, the value is None.
   pub last_parsed_token: Option<ParseTokens>,
@@ -109,7 +109,6 @@ pub struct JSON<'a> {
   // still expect to get a minor performance drain.
   // Until we find a better way of parsing without the need of peek(),
   // we'll keep it that way.
-  pub iterator: Scanner<'a>,
 
   // Check if the root JSON value has been parsed.
   // Help us catch trailing commas on root values.
@@ -128,60 +127,14 @@ pub struct JSON<'a> {
   pub errors: Vec<Error>,
 }
 
-pub struct CurrentEntry {
-  pub index: usize,
-  pub character: char,
-}
-
-pub struct Scanner<'a> {
-  iterator: std::iter::Peekable<std::iter::Enumerate<std::str::Chars<'a>>>,
-  current: CurrentEntry,
-}
-
-impl<'a> Scanner<'a> {
-  pub fn new(code: &'a str) -> Scanner<'a> {
-    Scanner {
-      iterator: code.chars().enumerate().peekable(),
-      current: CurrentEntry {
-        index: 0,
-        character: '\0',
-      },
-    }
-  }
-
-  pub fn next(&mut self) -> Option<(usize, char)> {
-    let next = self.iterator.next();
-    match next {
-      Some(ref item) => {
-        self.current = CurrentEntry {
-          index: item.0,
-          character: item.1,
-        };
-
-        next
-      }
-      None => None,
-    }
-  }
-
-  pub fn peek(&mut self) -> Option<&(usize, char)> {
-    self.iterator.peek()
-  }
-
-  pub fn current(&self) -> &CurrentEntry {
-    &self.current
-  }
-}
-
-impl<'a> JSON<'a> {
+impl JSON {
   // Returns a new Token instance.
-  pub fn new(code: &'a str) -> JSON<'a> {
+  pub fn new() -> JSON {
     JSON {
       last_parsed_token: None,
       root_value_parsed: false,
       stack: Vec::new(),
       object_has_valid_member: false,
-      iterator: Scanner::new(code),
       errors: Vec::new(),
     }
   }

@@ -1,9 +1,11 @@
 mod error;
 mod json;
+mod scanner;
 
 use error::Error;
 use json::general_tokens::*;
 use json::{StackTokens, JSON};
+use scanner::Scanner;
 
 mod validate_true;
 use validate_true::validate_true;
@@ -67,20 +69,20 @@ pub use error::ErrorType;
 /// println!("{:#?}", errors); // => [("E104", 0, 4)]
 /// ```
 pub fn validate(code: &str) -> Vec<Error> {
-  let mut json_document = JSON::new(code);
+  let mut scanner = Scanner::new(code);
+  let mut json_document = JSON::new();
 
-  if json_document
-    .iterator
+  if scanner
     .peek()
-    .filter(|(_, current_character)| current_character == &'\u{feff}')
+    .filter(|(_, first_character)| first_character == &'\u{feff}')
     .is_some()
   {
     // Ignore byte order mark.
-    json_document.iterator.next();
+    scanner.next();
   }
 
   // Iterate over all characters and return a Result if there is any error.
-  while let Some((current_index, current_character)) = json_document.iterator.next() {
+  while let Some((current_index, current_character)) = scanner.next() {
     // Match the token type of the character (begin-array, horizontal-tab, etc).
     // We check the first character of a JSON value to determine
     // what value to validate, i.e. string, number, literal name, etc.
@@ -90,71 +92,71 @@ pub fn validate(code: &str) -> Vec<Error> {
 
       // Character `t` is the first character of the `true` literal name.
       't' => {
-        if validate_true(&mut json_document).is_err() {
+        if validate_true(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       // Character `f` is the first character of the `false` literal name.
       'f' => {
-        if validate_false(&mut json_document).is_err() {
+        if validate_false(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       // Character `n` is the first character of the `null` literal name.
       'n' => {
-        if validate_null(&mut json_document).is_err() {
+        if validate_null(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       // Parse JSON number.
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '-' => {
-        if validate_number(&mut json_document).is_err() {
+        if validate_number(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       // Parse JSON String
       QUOTATION_MARK => {
-        if validate_string(&mut json_document).is_err() {
+        if validate_string(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       BEGIN_ARRAY => {
-        if validate_begin_array(&mut json_document).is_err() {
+        if validate_begin_array(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       END_ARRAY => {
-        if validate_end_array(&mut json_document).is_err() {
+        if validate_end_array(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       VALUE_SEPARATOR => {
-        if validate_value_separator(&mut json_document).is_err() {
+        if validate_value_separator(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       BEGIN_OBJECT => {
-        if validate_begin_object(&mut json_document).is_err() {
+        if validate_begin_object(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       END_OBJECT => {
-        if validate_end_object(&mut json_document).is_err() {
+        if validate_end_object(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
       NAME_SEPARATOR => {
-        if validate_name_separator(&mut json_document).is_err() {
+        if validate_name_separator(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
@@ -172,7 +174,7 @@ pub fn validate(code: &str) -> Vec<Error> {
   // In case we have not parsed any JSON value,
   // return empty JSON error.
   if json_document.last_parsed_token.is_none() {
-    let last_parsed_index = json_document.iterator.current().index;
+    let last_parsed_index = scanner.current().index;
     // Empty JSON document.
     let err = Error::new(ErrorType::E100, last_parsed_index, last_parsed_index + 1);
     json_document.errors.push(err);
@@ -184,21 +186,21 @@ pub fn validate(code: &str) -> Vec<Error> {
     match token {
       StackTokens::BeginArray => {
         // Unterminated array.
-        let last_parsed_index = json_document.iterator.current().index;
+        let last_parsed_index = scanner.current().index;
         let err = Error::new(ErrorType::E127, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
       }
 
       StackTokens::BeginObject => {
         // Unterminated object.
-        let last_parsed_index = json_document.iterator.current().index;
+        let last_parsed_index = scanner.current().index;
         let err = Error::new(ErrorType::E128, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
       }
 
       StackTokens::NameSeparator => {
         // Invalid object member.
-        let last_parsed_index = json_document.iterator.current().index;
+        let last_parsed_index = scanner.current().index;
         let err = Error::new(ErrorType::E141, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
       }

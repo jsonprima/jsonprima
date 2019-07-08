@@ -1,7 +1,11 @@
 use crate::error::{Error, ErrorType};
 use crate::json::{ParseTokens, StackTokens, JSON};
+use crate::scanner::Scanner;
 
-pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
+pub fn validate_name_separator(
+  json_document: &mut JSON,
+  scanner: &mut Scanner,
+) -> Result<(), ()> {
   match &json_document.last_parsed_token {
     Some(token) => match token {
       ParseTokens::EndArray
@@ -17,7 +21,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
               // avoid double colon
               if json_document.object_has_valid_member {
                 // Invalid use of colon.
-                let last_parsed_index = json_document.iterator.current().index;
+                let last_parsed_index = scanner.current().index;
                 let err =
                   Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
                 json_document.errors.push(err);
@@ -32,7 +36,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
 
             _ => {
               // Invalid use of colon.
-              let last_parsed_index = json_document.iterator.current().index;
+              let last_parsed_index = scanner.current().index;
               let err =
                 Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
               json_document.errors.push(err);
@@ -43,7 +47,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
 
           None => {
             // Invalid use of colon.
-            let last_parsed_index = json_document.iterator.current().index;
+            let last_parsed_index = scanner.current().index;
             let err =
               Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
             json_document.errors.push(err);
@@ -55,7 +59,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
 
       _ => {
         // Invalid use of colon.
-        let last_parsed_index = json_document.iterator.current().index;
+        let last_parsed_index = scanner.current().index;
         let err = Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -65,7 +69,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
 
     None => {
       // Invalid use of colon.
-      let last_parsed_index = json_document.iterator.current().index;
+      let last_parsed_index = scanner.current().index;
       let err = Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
       json_document.errors.push(err);
 

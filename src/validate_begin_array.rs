@@ -1,7 +1,11 @@
 use crate::error::{Error, ErrorType};
 use crate::json::{ParseTokens, StackTokens, JSON};
+use crate::scanner::Scanner;
 
-pub fn validate_begin_array(json_document: &mut JSON) -> Result<(), ()> {
+pub fn validate_begin_array(
+  json_document: &mut JSON,
+  scanner: &mut Scanner,
+) -> Result<(), ()> {
   match &json_document.last_parsed_token {
     Some(last_parsed_token) => match last_parsed_token {
       ParseTokens::ValueSeparator => {
@@ -9,7 +13,7 @@ pub fn validate_begin_array(json_document: &mut JSON) -> Result<(), ()> {
           Some(token) => match token {
             StackTokens::BeginObject => {
               // Invalid use of array as object name.
-              let last_parsed_index = json_document.iterator.current().index;
+              let last_parsed_index = scanner.current().index;
               let err =
                 Error::new(ErrorType::E142, last_parsed_index, last_parsed_index + 1);
               json_document.errors.push(err);
@@ -46,7 +50,7 @@ pub fn validate_begin_array(json_document: &mut JSON) -> Result<(), ()> {
 
       ParseTokens::BeginObject => {
         // Illegal begin-array after JSON value.
-        let last_parsed_index = json_document.iterator.current().index;
+        let last_parsed_index = scanner.current().index;
         let err = Error::new(ErrorType::E125, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -55,7 +59,7 @@ pub fn validate_begin_array(json_document: &mut JSON) -> Result<(), ()> {
 
       _ => {
         // Illegal begin-array after JSON value.
-        let last_parsed_index = json_document.iterator.current().index;
+        let last_parsed_index = scanner.current().index;
         let err = Error::new(ErrorType::E125, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
