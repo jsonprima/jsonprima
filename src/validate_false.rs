@@ -13,7 +13,7 @@ macro_rules! next {
         let err = Error::new(
           ErrorType::E104,
           $index_start,
-          $json_document.current_iterator_index + 1,
+          $json_document.iterator.current().index + 1,
         );
 
         $json_document.errors.push(err);
@@ -24,13 +24,8 @@ macro_rules! next {
           // Invalid character in literal name.
           let err = Error::new(ErrorType::E105, $index_start, next_index + 1);
           $json_document.errors.push(err);
-          $json_document.current_iterator_index = next_index;
-          $json_document.current_iterator_character = next_character;
-
           Err(())
         } else {
-          $json_document.current_iterator_index = next_index;
-          $json_document.current_iterator_character = next_character;
           Ok(())
         }
       });
@@ -54,7 +49,7 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
   // let errors = jsonprima::validate(&text);
   // println!("{:#?}", errors); // => [("E104", 0, 5)]
   // ```
-  let index_start = json_document.current_iterator_index;
+  let index_start = json_document.iterator.current().index;
 
   next!(json_document, 'a', index_start);
   next!(json_document, 'l', index_start);
@@ -76,7 +71,7 @@ pub fn validate_false(json_document: &mut JSON) -> Result<(), ()> {
       ParseTokens::ValueSeparator => {
         if json_document.stack.last().unwrap() == &StackTokens::BeginObject {
           // Invalid use of false as object name.
-          let last_parsed_index = json_document.current_iterator_index;
+          let last_parsed_index = json_document.iterator.current().index;
           let err = Error::new(ErrorType::E139, last_parsed_index, last_parsed_index + 1);
           json_document.errors.push(err);
 
@@ -88,7 +83,7 @@ pub fn validate_false(json_document: &mut JSON) -> Result<(), ()> {
 
       ParseTokens::BeginObject => {
         // Invalid use of false as object name.
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E139, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -104,7 +99,7 @@ pub fn validate_false(json_document: &mut JSON) -> Result<(), ()> {
 
       // Illegal character "f" after structural token. Expected comma or colon.
       _ => {
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E107, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 

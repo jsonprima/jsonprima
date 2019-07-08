@@ -22,16 +22,16 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
   // let errors = jsonprima::validate(&text);
   // println!("{:#?}", errors); // => [("E110", 0, 4)]
   // ```
-  let index_start = json_document.current_iterator_index;
+  let index_start = json_document.iterator.current().index;
 
   // We already ensured there is at least a digit or minus sign.
   // In case there is only a minus sign, with no other digits following,
   // the next condition will successfully catch the error.
-  num.push(json_document.current_iterator_character);
+  num.push(json_document.iterator.current().character);
 
   // If the first character is zero, the next cannot be a number
   // (to avoid leading zeroes).
-  if json_document.current_iterator_character == '0' {
+  if json_document.iterator.current().character == '0' {
     let peek = json_document.iterator.peek();
 
     if peek
@@ -49,12 +49,12 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
   // If the first character is minus sign,
   // ensure that the next character is ASCII digit,
   // but not leading zero.
-  if json_document.current_iterator_character == '-' {
+  if json_document.iterator.current().character == '-' {
     let peek = json_document.iterator.peek();
 
     // Next entry does not exist.
     if peek.is_none() {
-      let last_parsed_index = json_document.current_iterator_index;
+      let last_parsed_index = json_document.iterator.current().index;
       let err = Error::new(ErrorType::E110, index_start, last_parsed_index + 1);
       json_document.errors.push(err);
 
@@ -75,10 +75,8 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
     if peek.unwrap().1 == '0' {
       // Advance the iterator to next entry and save the current character in num vector,
       // because is valid.
-      let next = json_document.iterator.next();
-      json_document.current_iterator_index = next.unwrap().0;
-      json_document.current_iterator_character = next.unwrap().1;
-      num.push(json_document.current_iterator_character);
+      json_document.iterator.next();
+      num.push(json_document.iterator.current().character);
 
       let peek = json_document.iterator.peek();
       if peek
@@ -103,10 +101,8 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
   {
     // Advance the iterator to next entry and save the current character in num vector,
     // because is valid.
-    let next = json_document.iterator.next();
-    json_document.current_iterator_index = next.unwrap().0;
-    json_document.current_iterator_character = next.unwrap().1;
-    num.push(json_document.current_iterator_character);
+    json_document.iterator.next();
+    num.push(json_document.iterator.current().character);
   }
 
   // Parse decimal point.
@@ -118,17 +114,15 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
   {
     // Advance the iterator to next entry and save the current character in num vector,
     // because is valid.
-    let next = json_document.iterator.next();
-    json_document.current_iterator_index = next.unwrap().0;
-    json_document.current_iterator_character = next.unwrap().1;
-    num.push(json_document.current_iterator_character);
+    json_document.iterator.next();
+    num.push(json_document.iterator.current().character);
 
     // First character after decimal point, must be ASCII digit.
     let peek = json_document.iterator.peek();
 
     // Next entry does not exist.
     if peek.is_none() {
-      let last_parsed_index = json_document.current_iterator_index;
+      let last_parsed_index = json_document.iterator.current().index;
       let err = Error::new(ErrorType::E110, index_start, last_parsed_index + 1);
       json_document.errors.push(err);
 
@@ -153,10 +147,8 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
     {
       // Advance the iterator to next entry and save the current character in num vector,
       // because is valid.
-      let next = json_document.iterator.next();
-      json_document.current_iterator_index = next.unwrap().0;
-      json_document.current_iterator_character = next.unwrap().1;
-      num.push(json_document.current_iterator_character);
+      json_document.iterator.next();
+      num.push(json_document.iterator.current().character);
     }
   }
 
@@ -169,10 +161,8 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
   {
     // Advance the iterator to next entry and save the current character in num vector,
     // because is valid.
-    let next = json_document.iterator.next();
-    json_document.current_iterator_index = next.unwrap().0;
-    json_document.current_iterator_character = next.unwrap().1;
-    num.push(json_document.current_iterator_character);
+    json_document.iterator.next();
+    num.push(json_document.iterator.current().character);
 
     // Exponent part can be accompanied by a a plus or minus sign.
     if json_document
@@ -183,10 +173,8 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
     {
       // Advance the iterator to next entry and save the current character in num vector,
       // because is valid.
-      let next = json_document.iterator.next();
-      json_document.current_iterator_index = next.unwrap().0;
-      json_document.current_iterator_character = next.unwrap().1;
-      num.push(json_document.current_iterator_character);
+      json_document.iterator.next();
+      num.push(json_document.iterator.current().character);
     }
 
     // First character of exponential part, must be ASCII digit.
@@ -194,7 +182,7 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
 
     // Next entry does not exist.
     if peek.is_none() {
-      let last_parsed_index = json_document.current_iterator_index;
+      let last_parsed_index = json_document.iterator.current().index;
       let err = Error::new(ErrorType::E110, index_start, last_parsed_index + 1);
       json_document.errors.push(err);
 
@@ -219,10 +207,8 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
     {
       // Advance the iterator to next entry and save the current character in num vector,
       // because is valid.
-      let next = json_document.iterator.next();
-      json_document.current_iterator_index = next.unwrap().0;
-      json_document.current_iterator_character = next.unwrap().1;
-      num.push(json_document.current_iterator_character);
+      json_document.iterator.next();
+      num.push(json_document.iterator.current().character);
     }
   }
 
@@ -234,7 +220,7 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
       if num < core::f64::MIN || num > core::f64::MAX {
         // Could not parse out of range JSON number.
         if next.is_none() {
-          let last_parsed_index = json_document.current_iterator_index;
+          let last_parsed_index = json_document.iterator.current().index;
           let err = Error::new(ErrorType::E112, index_start, last_parsed_index + 1);
           json_document.errors.push(err);
         } else {
@@ -252,7 +238,7 @@ fn validate(json_document: &mut JSON) -> Result<(), ()> {
     Err(_) => {
       // Could not parse JSON number.
       if next.is_none() {
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E113, index_start, last_parsed_index + 1);
         json_document.errors.push(err);
       } else {
@@ -278,7 +264,7 @@ pub fn validate_number(json_document: &mut JSON) -> Result<(), ()> {
           .unwrap_or(&StackTokens::BeginArray)
           == &StackTokens::BeginObject
         {
-          let last_parsed_index = json_document.current_iterator_index;
+          let last_parsed_index = json_document.iterator.current().index;
           let err = Error::new(ErrorType::E137, last_parsed_index, last_parsed_index + 1);
           json_document.errors.push(err);
 
@@ -296,7 +282,7 @@ pub fn validate_number(json_document: &mut JSON) -> Result<(), ()> {
 
       // Illegal number after structural token. Expected comma or colon.
       _ => {
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E109, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 

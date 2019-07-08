@@ -67,7 +67,7 @@ pub use error::ErrorType;
 /// println!("{:#?}", errors); // => [("E104", 0, 4)]
 /// ```
 pub fn validate(code: &str) -> Vec<Error> {
-  let mut json_document = JSON::new(code.chars().enumerate().peekable());
+  let mut json_document = JSON::new(code);
 
   if json_document
     .iterator
@@ -81,10 +81,6 @@ pub fn validate(code: &str) -> Vec<Error> {
 
   // Iterate over all characters and return a Result if there is any error.
   while let Some((current_index, current_character)) = json_document.iterator.next() {
-    // Save the current index and character to json_document struct.
-    json_document.current_iterator_index = current_index;
-    json_document.current_iterator_character = current_character;
-
     // Match the token type of the character (begin-array, horizontal-tab, etc).
     // We check the first character of a JSON value to determine
     // what value to validate, i.e. string, number, literal name, etc.
@@ -176,7 +172,7 @@ pub fn validate(code: &str) -> Vec<Error> {
   // In case we have not parsed any JSON value,
   // return empty JSON error.
   if json_document.last_parsed_token.is_none() {
-    let last_parsed_index = json_document.current_iterator_index;
+    let last_parsed_index = json_document.iterator.current().index;
     // Empty JSON document.
     let err = Error::new(ErrorType::E100, last_parsed_index, last_parsed_index + 1);
     json_document.errors.push(err);
@@ -188,21 +184,21 @@ pub fn validate(code: &str) -> Vec<Error> {
     match token {
       StackTokens::BeginArray => {
         // Unterminated array.
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E127, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
       }
 
       StackTokens::BeginObject => {
         // Unterminated object.
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E128, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
       }
 
       StackTokens::NameSeparator => {
         // Invalid object member.
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E141, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
       }

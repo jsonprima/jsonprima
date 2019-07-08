@@ -17,7 +17,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
               // avoid double colon
               if json_document.object_has_valid_member {
                 // Invalid use of colon.
-                let last_parsed_index = json_document.current_iterator_index;
+                let last_parsed_index = json_document.iterator.current().index;
                 let err =
                   Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
                 json_document.errors.push(err);
@@ -32,7 +32,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
 
             _ => {
               // Invalid use of colon.
-              let last_parsed_index = json_document.current_iterator_index;
+              let last_parsed_index = json_document.iterator.current().index;
               let err =
                 Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
               json_document.errors.push(err);
@@ -43,7 +43,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
 
           None => {
             // Invalid use of colon.
-            let last_parsed_index = json_document.current_iterator_index;
+            let last_parsed_index = json_document.iterator.current().index;
             let err =
               Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
             json_document.errors.push(err);
@@ -55,7 +55,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
 
       _ => {
         // Invalid use of colon.
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -65,7 +65,7 @@ pub fn validate_name_separator(json_document: &mut JSON) -> Result<(), ()> {
 
     None => {
       // Invalid use of colon.
-      let last_parsed_index = json_document.current_iterator_index;
+      let last_parsed_index = json_document.iterator.current().index;
       let err = Error::new(ErrorType::E136, last_parsed_index, last_parsed_index + 1);
       json_document.errors.push(err);
 

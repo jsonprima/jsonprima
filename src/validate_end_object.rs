@@ -21,7 +21,7 @@ pub fn validate_end_object(json_document: &mut JSON) -> Result<(), ()> {
                 Ok(())
               } else {
                 // Invalid object member. Member value does not exist.
-                let last_parsed_index = json_document.current_iterator_index;
+                let last_parsed_index = json_document.iterator.current().index;
                 let err =
                   Error::new(ErrorType::E135, last_parsed_index, last_parsed_index + 1);
                 json_document.errors.push(err);
@@ -32,7 +32,7 @@ pub fn validate_end_object(json_document: &mut JSON) -> Result<(), ()> {
 
             _ => {
               // Illegal end-object. No begin-object match.
-              let last_parsed_index = json_document.current_iterator_index;
+              let last_parsed_index = json_document.iterator.current().index;
               let err =
                 Error::new(ErrorType::E131, last_parsed_index, last_parsed_index + 1);
               json_document.errors.push(err);
@@ -43,7 +43,7 @@ pub fn validate_end_object(json_document: &mut JSON) -> Result<(), ()> {
 
           None => {
             // Illegal end-object. No begin-object match.
-            let last_parsed_index = json_document.current_iterator_index;
+            let last_parsed_index = json_document.iterator.current().index;
             let err =
               Error::new(ErrorType::E131, last_parsed_index, last_parsed_index + 1);
             json_document.errors.push(err);
@@ -55,7 +55,7 @@ pub fn validate_end_object(json_document: &mut JSON) -> Result<(), ()> {
 
       ParseTokens::ValueSeparator => {
         // Illegal end-object after comma.
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E132, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -64,7 +64,7 @@ pub fn validate_end_object(json_document: &mut JSON) -> Result<(), ()> {
 
       ParseTokens::NameSeparator => {
         // Illegal end-object after colon.
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E134, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -73,7 +73,7 @@ pub fn validate_end_object(json_document: &mut JSON) -> Result<(), ()> {
 
       _ => {
         // Illegal end-object. No begin-object match.
-        let last_parsed_index = json_document.current_iterator_index;
+        let last_parsed_index = json_document.iterator.current().index;
         let err = Error::new(ErrorType::E131, last_parsed_index, last_parsed_index + 1);
         json_document.errors.push(err);
 
@@ -83,7 +83,7 @@ pub fn validate_end_object(json_document: &mut JSON) -> Result<(), ()> {
 
     None => {
       // Illegal end-object. No begin-object match.
-      let last_parsed_index = json_document.current_iterator_index;
+      let last_parsed_index = json_document.iterator.current().index;
       let err = Error::new(ErrorType::E131, last_parsed_index, last_parsed_index + 1);
       json_document.errors.push(err);
 
