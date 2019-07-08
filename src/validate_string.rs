@@ -1,5 +1,5 @@
 use crate::error::{Error, ErrorType};
-use crate::tokens::{general_tokens::*, ParseTokens, Tokens};
+use crate::tokens::{general_tokens::*, ParseTokens, StackTokens, Tokens};
 
 // Given the tokens structure where the iterator index is in the
 // start of a Unicode escape sequence values, i.e. X in \uXXXX,
@@ -278,9 +278,27 @@ fn validate(tokens: &mut Tokens) -> Result<(), ()> {
 pub fn validate_string(tokens: &mut Tokens) -> Result<(), ()> {
   match &tokens.last_parsed_token {
     Some(last_parsed_token) => match last_parsed_token {
-      ParseTokens::BeginArray => validate(tokens),
+      ParseTokens::BeginObject
+      | ParseTokens::ValueSeparator
+      | ParseTokens::NameSeparator
+      | ParseTokens::BeginArray => match tokens.stack.last() {
+        Some(token) => match token {
+          StackTokens::NameSeparator => {
+            tokens.stack.pop();
+            tokens.object_has_valid_member = true;
+            validate(tokens)
+          }
 
-      ParseTokens::ValueSeparator => validate(tokens),
+          StackTokens::BeginObject => {
+            tokens.object_has_valid_member = false;
+            validate(tokens)
+          }
+
+          StackTokens::BeginArray => validate(tokens),
+        },
+
+        None => validate(tokens),
+      },
 
       // Illegal string after structural token. Expected comma or colon.
       _ => {

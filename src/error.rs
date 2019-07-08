@@ -77,8 +77,53 @@ pub enum ErrorType {
   // Unterminated array.
   E127,
 
+  // Unterminated object.
+  E128,
+
   // Illegal end-array after comma.
   E129,
+
+  // Illegal begin-object after JSON value.
+  E130,
+
+  // Illegal end-object. No begin-object match.
+  E131,
+
+  // Illegal end-object after comma.
+  E132,
+
+  // Illegal end-array after colon.
+  E133,
+
+  // Illegal end-object after colon.
+  E134,
+
+  // Invalid object member. Member value does not exist.
+  E135,
+
+  // Invalid use of colon.
+  E136,
+
+  // Invalid use of number as object name.
+  E137,
+
+  // Invalid use of true as object name.
+  E138,
+
+  // Invalid use of false as object name.
+  E139,
+
+  // Invalid use of null as object name.
+  E140,
+
+  // Invalid object member
+  E141,
+
+  // Invalid use of array as object name.
+  E142,
+
+  // Invalid use of object as object name.
+  E143,
 }
 
 /// Used to represent the various error variants in this module.
@@ -120,7 +165,22 @@ impl ErrorType {
       ErrorType::E125 => "Illegal begin-array after JSON value.",
       ErrorType::E126 => "Illegal end-array. No begin-array match.",
       ErrorType::E127 => "Unterminated array.",
+      ErrorType::E128 => "Unterminated object.",
       ErrorType::E129 => "Illegal end-array after comma.",
+      ErrorType::E130 => "Illegal begin-object after JSON value.",
+      ErrorType::E131 => "Illegal end-object. No begin-object match.",
+      ErrorType::E132 => "Illegal end-object after comma.",
+      ErrorType::E133 => "Illegal end-array after colon.",
+      ErrorType::E134 => "Illegal end-object after colon.",
+      ErrorType::E135 => "Invalid object member. Member value does not exist.",
+      ErrorType::E136 => "Invalid use of colon.",
+      ErrorType::E137 => "Invalid use of number as object name.",
+      ErrorType::E138 => "Invalid use of true as object name.",
+      ErrorType::E139 => "Invalid use of false as object name.",
+      ErrorType::E140 => "Invalid use of null as object name.",
+      ErrorType::E141 => "Invalid object member.",
+      ErrorType::E142 => "Invalid use of array as object name.",
+      ErrorType::E143 => "Invalid use of object as object name.",
     }
   }
 
@@ -151,7 +211,22 @@ impl ErrorType {
       ErrorType::E125 => "E125",
       ErrorType::E126 => "E126",
       ErrorType::E127 => "E127",
+      ErrorType::E128 => "E128",
       ErrorType::E129 => "E129",
+      ErrorType::E130 => "E130",
+      ErrorType::E131 => "E131",
+      ErrorType::E132 => "E132",
+      ErrorType::E133 => "E133",
+      ErrorType::E134 => "E134",
+      ErrorType::E135 => "E135",
+      ErrorType::E136 => "E136",
+      ErrorType::E137 => "E137",
+      ErrorType::E138 => "E138",
+      ErrorType::E139 => "E139",
+      ErrorType::E140 => "E140",
+      ErrorType::E141 => "E141",
+      ErrorType::E142 => "E142",
+      ErrorType::E143 => "E143",
     }
   }
 }

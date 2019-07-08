@@ -93,3 +93,21 @@ test!(test_59, "false,", vec![("E124", 5, 6)]);
 test!(test_60, "false ,", vec![("E124", 6, 7)]);
 test!(test_61, " false ,", vec![("E124", 7, 8)]);
 test!(test_62, " \n\r false \t,", vec![("E124", 11, 12)]);
+
+// false begin-object
+test!(test_63, "false{", vec![("E130", 5, 6)]);
+test!(test_64, "false {", vec![("E130", 6, 7)]);
+test!(test_65, " false {", vec![("E130", 7, 8)]);
+test!(test_66, " \n\r false \t{", vec![("E130", 11, 12)]);
+
+// false end-object
+test!(test_67, "false}", vec![("E131", 5, 6)]);
+test!(test_68, "false }", vec![("E131", 6, 7)]);
+test!(test_69, " false }", vec![("E131", 7, 8)]);
+test!(test_70, " \n\r false \t}", vec![("E131", 11, 12)]);
+
+// false name-separator
+test!(test_71, "false:", vec![("E136", 5, 6)]);
+test!(test_72, "false :", vec![("E136", 6, 7)]);
+test!(test_73, " false :", vec![("E136", 7, 8)]);
+test!(test_74, " \n\r false \t:", vec![("E136", 11, 12)]);

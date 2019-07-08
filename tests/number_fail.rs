@@ -163,3 +163,21 @@ test!(test_65, "0,", vec![("E124", 1, 2)]);
 test!(test_66, "0 ,", vec![("E124", 2, 3)]);
 test!(test_67, " 0 ,", vec![("E124", 3, 4)]);
 test!(test_68, " \n\r 0 \t,", vec![("E124", 7, 8)]);
+
+// number begin-object
+test!(test_69, "0{", vec![("E130", 1, 2)]);
+test!(test_70, "0 {", vec![("E130", 2, 3)]);
+test!(test_71, " 0 {", vec![("E130", 3, 4)]);
+test!(test_72, " \n\r 0 \t{", vec![("E130", 7, 8)]);
+
+// number end-object
+test!(test_73, "0}", vec![("E131", 1, 2)]);
+test!(test_74, "0 }", vec![("E131", 2, 3)]);
+test!(test_75, " 0 }", vec![("E131", 3, 4)]);
+test!(test_76, " \n\r 0 \t}", vec![("E131", 7, 8)]);
+
+// number name-separator
+test!(test_77, "0:", vec![("E136", 1, 2)]);
+test!(test_78, "0 :", vec![("E136", 2, 3)]);
+test!(test_79, " 0 :", vec![("E136", 3, 4)]);
+test!(test_80, " \n\r 0 \t:", vec![("E136", 7, 8)]);

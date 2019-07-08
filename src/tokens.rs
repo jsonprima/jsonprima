@@ -6,20 +6,20 @@ pub mod general_tokens {
   // begin-array = ws %x5B ws ; `[` left square bracket
   pub const BEGIN_ARRAY: char = '[';
 
-  // // begin-object = ws %x7B ws ; `{` left curly bracket
-  // pub const BEGIN_OBJECT: char = '{';
+  // begin-object = ws %x7B ws ; `{` left curly bracket
+  pub const BEGIN_OBJECT: char = '{';
 
   // end-array = ws %x5D ws ; `]` right square bracket
   pub const END_ARRAY: char = ']';
 
-  // // end-object = ws %x7D ws ; `}` right curly bracket
-  // pub const END_OBJECT: char = '}';
+  // end-object = ws %x7D ws ; `}` right curly bracket
+  pub const END_OBJECT: char = '}';
 
   // quotation-mark = ws %x22 ws ; `"` quotation-mark
   pub const QUOTATION_MARK: char = '"';
 
-  // // name-separator = ws %x3A ws ; `:` colon
-  // pub const NAME_SEPARATOR: char = ':';
+  // name-separator = ws %x3A ws ; `:` colon
+  pub const NAME_SEPARATOR: char = ':';
 
   // value-separator = ws %x2C ws ; `,` comma
   pub const VALUE_SEPARATOR: char = ',';
@@ -43,11 +43,11 @@ pub mod general_tokens {
 #[derive(Debug)]
 pub enum ParseTokens {
   BeginArray,
-  // BeginObject,
+  BeginObject,
   EndArray,
-  // EndObject,
+  EndObject,
   String,
-  // NameSeparator,
+  NameSeparator,
   ValueSeparator,
   True,
   False,
@@ -74,11 +74,11 @@ pub enum ParseTokens {
 // In the next iteration we check the name-separator after "invalid"
 // with the last parsed token in the stack. We see that we have already
 // parsed an object member and this token is not valid.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum StackTokens {
   BeginArray,
-  // BeginObject,
-  // NameSeparator,
+  BeginObject,
+  NameSeparator,
 }
 
 // Helper structure to track all the info used by the validator,

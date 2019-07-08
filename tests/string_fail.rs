@@ -211,3 +211,21 @@ test!(test_82, "\"\",", vec![("E124", 2, 3)]);
 test!(test_83, "\"\" ,", vec![("E124", 3, 4)]);
 test!(test_84, " \"\" ,", vec![("E124", 4, 5)]);
 test!(test_85, " \n\r \"\" \t,", vec![("E124", 8, 9)]);
+
+// string begin-object
+test!(test_86, "\"\"{", vec![("E130", 2, 3)]);
+test!(test_87, "\"\" {", vec![("E130", 3, 4)]);
+test!(test_88, " \"\" {", vec![("E130", 4, 5)]);
+test!(test_89, " \n\r \"\" \t{", vec![("E130", 8, 9)]);
+
+// string end-object
+test!(test_90, "\"\"}", vec![("E131", 2, 3)]);
+test!(test_91, "\"\" }", vec![("E131", 3, 4)]);
+test!(test_92, " \"\" }", vec![("E131", 4, 5)]);
+test!(test_93, " \n\r \"\" \t}", vec![("E131", 8, 9)]);
+
+// string name-separator
+test!(test_94, "\"\":", vec![("E136", 2, 3)]);
+test!(test_95, "\"\" :", vec![("E136", 3, 4)]);
+test!(test_96, " \"\" :", vec![("E136", 4, 5)]);
+test!(test_97, " \n\r \"\" \t:", vec![("E136", 8, 9)]);

@@ -10,13 +10,24 @@ pub fn validate_end_array(tokens: &mut Tokens) -> Result<(), ()> {
       | ParseTokens::False
       | ParseTokens::Null
       | ParseTokens::Number
-      | ParseTokens::String => {
+      | ParseTokens::String
+      | ParseTokens::EndObject => {
         match tokens.stack.last() {
           Some(token) => match token {
             StackTokens::BeginArray => {
               tokens.last_parsed_token = Some(ParseTokens::EndArray);
               tokens.stack.pop();
               Ok(())
+            }
+
+            _ => {
+              // Illegal end-array. No begin-array match.
+              let last_parsed_index = tokens.current_iterator_index;
+              let err =
+                Error::new(ErrorType::E126, last_parsed_index, last_parsed_index + 1);
+              tokens.errors.push(err);
+
+              Err(())
             }
           },
 
@@ -36,6 +47,15 @@ pub fn validate_end_array(tokens: &mut Tokens) -> Result<(), ()> {
         // Illegal end-array after comma.
         let last_parsed_index = tokens.current_iterator_index;
         let err = Error::new(ErrorType::E129, last_parsed_index, last_parsed_index + 1);
+        tokens.errors.push(err);
+
+        Err(())
+      }
+
+      ParseTokens::NameSeparator => {
+        // Illegal end-array after colon.
+        let last_parsed_index = tokens.current_iterator_index;
+        let err = Error::new(ErrorType::E133, last_parsed_index, last_parsed_index + 1);
         tokens.errors.push(err);
 
         Err(())

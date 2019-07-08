@@ -202,3 +202,33 @@ test!(test_116, "[null,,", vec![("E123", 6, 7)]);
 test!(test_117, "[1000,,", vec![("E123", 6, 7)]);
 test!(test_118, "[\"00\",,", vec![("E123", 6, 7)]);
 test!(test_119, "[[10],,", vec![("E123", 6, 7)]);
+
+// Object as array element
+test!(test_120, "[ {} ]", vec![]);
+test!(test_121, "[ [ {}  ]]", vec![]);
+test!(test_122, "[[[{}]", vec![("E127", 5, 6)]);
+test!(test_123, "[{}]]]]", vec![("E126", 4, 5)]);
+
+// Multiple objects as array elements
+test!(test_124, "[ {}, {}, {} ]", vec![]);
+test!(test_125, "[ [ {}, {}, {}  ], true, true]", vec![]);
+test!(test_126, "[[[{}, {}, {}]", vec![("E127", 13, 14)]);
+test!(test_127, "[{}, {}, {}]]]]", vec![("E126", 12, 13)]);
+
+// array object
+test!(test_128, "[10]{}", vec![("E130", 4, 5)]);
+test!(test_129, "[10] {}", vec![("E130", 5, 6)]);
+test!(test_130, " [10] {}", vec![("E130", 6, 7)]);
+test!(test_131, " \n\r [10] \t{}", vec![("E130", 10, 11)]);
+
+// colon instead of comma
+test!(test_132, "[ 5: 5 ]", vec![("E136", 3, 4)]);
+
+// array name-separator
+test!(test_133, "[10]:", vec![("E136", 4, 5)]);
+test!(test_134, "[10] :", vec![("E136", 5, 6)]);
+test!(test_135, " [10] :", vec![("E136", 6, 7)]);
+test!(test_136, " \n\r [10] \t:", vec![("E136", 10, 11)]);
+
+// Nested objects in array
+test!(test_137, " \n\r [{\"\": 10}, [{}], {}] \t", vec![]);

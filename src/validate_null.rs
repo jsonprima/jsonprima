@@ -1,5 +1,5 @@
 use crate::error::{Error, ErrorType};
-use crate::tokens::{ParseTokens, Tokens};
+use crate::tokens::{ParseTokens, StackTokens, Tokens};
 
 // Helper macro to test if the next entry in tokens.iterator
 // match expected_character.
@@ -72,7 +72,34 @@ pub fn validate_null(tokens: &mut Tokens) -> Result<(), ()> {
     Some(last_parsed_token) => match last_parsed_token {
       ParseTokens::BeginArray => validate(tokens),
 
-      ParseTokens::ValueSeparator => validate(tokens),
+      ParseTokens::ValueSeparator => {
+        if tokens.stack.last().unwrap() == &StackTokens::BeginObject {
+          // Invalid use of null as object name.
+          let last_parsed_index = tokens.current_iterator_index;
+          let err = Error::new(ErrorType::E140, last_parsed_index, last_parsed_index + 1);
+          tokens.errors.push(err);
+
+          Err(())
+        } else {
+          validate(tokens)
+        }
+      }
+
+      ParseTokens::BeginObject => {
+        // Invalid use of null as object name.
+        let last_parsed_index = tokens.current_iterator_index;
+        let err = Error::new(ErrorType::E140, last_parsed_index, last_parsed_index + 1);
+        tokens.errors.push(err);
+
+        Err(())
+      }
+
+      ParseTokens::NameSeparator => {
+        tokens.stack.pop();
+        tokens.object_has_valid_member = true;
+
+        validate(tokens)
+      }
 
       // Illegal character "n" after structural token. Expected comma or colon.
       _ => {

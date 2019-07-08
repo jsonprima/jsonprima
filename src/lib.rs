@@ -29,6 +29,15 @@ use validate_end_array::validate_end_array;
 mod validate_value_separator;
 use validate_value_separator::validate_value_separator;
 
+mod validate_begin_object;
+use validate_begin_object::validate_begin_object;
+
+mod validate_end_object;
+use validate_end_object::validate_end_object;
+
+mod validate_name_separator;
+use validate_name_separator::validate_name_separator;
+
 // Public exports
 pub use error::ErrorType;
 
@@ -136,6 +145,24 @@ pub fn validate(code: &str) -> Vec<Error> {
         }
       }
 
+      BEGIN_OBJECT => {
+        if validate_begin_object(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
+
+      END_OBJECT => {
+        if validate_end_object(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
+
+      NAME_SEPARATOR => {
+        if validate_name_separator(&mut tokens).is_err() {
+          return tokens.errors;
+        }
+      }
+
       // Invalid literal.
       _ => {
         let err = Error::new(ErrorType::E106, current_index, current_index + 1);
@@ -163,6 +190,20 @@ pub fn validate(code: &str) -> Vec<Error> {
         // Unterminated array.
         let last_parsed_index = tokens.current_iterator_index;
         let err = Error::new(ErrorType::E127, last_parsed_index, last_parsed_index + 1);
+        tokens.errors.push(err);
+      }
+
+      StackTokens::BeginObject => {
+        // Unterminated object.
+        let last_parsed_index = tokens.current_iterator_index;
+        let err = Error::new(ErrorType::E128, last_parsed_index, last_parsed_index + 1);
+        tokens.errors.push(err);
+      }
+
+      StackTokens::NameSeparator => {
+        // Invalid object member.
+        let last_parsed_index = tokens.current_iterator_index;
+        let err = Error::new(ErrorType::E141, last_parsed_index, last_parsed_index + 1);
         tokens.errors.push(err);
       }
     }

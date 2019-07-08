@@ -89,3 +89,21 @@ test!(test_54, "null,", vec![("E124", 4, 5)]);
 test!(test_55, "null ,", vec![("E124", 5, 6)]);
 test!(test_56, " null ,", vec![("E124", 6, 7)]);
 test!(test_57, " \n\r null \t,", vec![("E124", 10, 11)]);
+
+// null begin-object
+test!(test_58, "null{", vec![("E130", 4, 5)]);
+test!(test_59, "null {", vec![("E130", 5, 6)]);
+test!(test_60, " null {", vec![("E130", 6, 7)]);
+test!(test_61, " \n\r null \t{", vec![("E130", 10, 11)]);
+
+// null end-object
+test!(test_62, "null}", vec![("E131", 4, 5)]);
+test!(test_63, "null }", vec![("E131", 5, 6)]);
+test!(test_64, " null }", vec![("E131", 6, 7)]);
+test!(test_65, " \n\r null \t}", vec![("E131", 10, 11)]);
+
+// null name-separator
+test!(test_66, "null:", vec![("E136", 4, 5)]);
+test!(test_67, "null :", vec![("E136", 5, 6)]);
+test!(test_68, " null :", vec![("E136", 6, 7)]);
+test!(test_69, " \n\r null \t:", vec![("E136", 10, 11)]);

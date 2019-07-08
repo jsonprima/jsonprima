@@ -1,5 +1,5 @@
 use crate::error::{Error, ErrorType};
-use crate::tokens::{ParseTokens, Tokens};
+use crate::tokens::{ParseTokens, StackTokens, Tokens};
 
 fn validate(tokens: &mut Tokens) -> Result<(), ()> {
   // A vector holding all the characters that will result in
@@ -271,7 +271,25 @@ pub fn validate_number(tokens: &mut Tokens) -> Result<(), ()> {
     Some(last_parsed_token) => match last_parsed_token {
       ParseTokens::BeginArray => validate(tokens),
 
-      ParseTokens::ValueSeparator => validate(tokens),
+      ParseTokens::ValueSeparator | ParseTokens::BeginObject => {
+        if tokens.stack.last().unwrap_or(&StackTokens::BeginArray)
+          == &StackTokens::BeginObject
+        {
+          let last_parsed_index = tokens.current_iterator_index;
+          let err = Error::new(ErrorType::E137, last_parsed_index, last_parsed_index + 1);
+          tokens.errors.push(err);
+
+          Err(())
+        } else {
+          validate(tokens)
+        }
+      }
+
+      ParseTokens::NameSeparator => {
+        tokens.stack.pop();
+        tokens.object_has_valid_member = true;
+        validate(tokens)
+      }
 
       // Illegal number after structural token. Expected comma or colon.
       _ => {

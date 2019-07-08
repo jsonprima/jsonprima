@@ -24,10 +24,10 @@ pub fn validate_value_separator(tokens: &mut Tokens) -> Result<(), ()> {
           }
         }
 
-        ParseTokens::EndArray => {
+        ParseTokens::EndArray | ParseTokens::EndObject => {
           if !tokens.stack.is_empty() {
             match tokens.stack.last().unwrap() {
-              StackTokens::BeginArray => {
+              StackTokens::BeginArray | StackTokens::BeginObject => {
                 tokens.last_parsed_token = Some(ParseTokens::ValueSeparator);
                 Ok(())
               }
