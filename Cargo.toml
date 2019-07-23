@@ -31,3 +31,6 @@ name = "jsonprima"
 
 [[bin]]
 name = "jsonprima"
+
+[dependencies]
+clap = "2.33.0"
