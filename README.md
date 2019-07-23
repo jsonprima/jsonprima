@@ -8,14 +8,6 @@ Documentation:
 ## Code Status
 [![Build Status](https://travis-ci.org/jsonprima/jsonprima.svg?branch=master)](https://travis-ci.org/jsonprima/jsonprima) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-## Usage
-Use this library in your project. Add this to your Cargo.toml:
-
-```toml
-[dependencies]
-jsonprima = "0.7"
-```
-
 ## CLI
 You can grab the [latest release](https://github.com/jsonprima/jsonprima/releases/latest) of the binary.
 
