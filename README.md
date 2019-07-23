@@ -18,13 +18,6 @@ Validate inline code using  the `-t` option.
 jsonprima -t "[true, false]"
 ```
 
-### Use text file
-Validate a file using the `-f` option.
-
-```bash
-jsonprima -f /path/to/text/file
-```
-
 ## License
 JSONPrima is primarily distributed under the terms of the MIT license.
 
