@@ -1,8 +1,13 @@
+//! Scanner
+
+/// Current index and character of the JSON document.
 pub struct CurrentEntry {
   pub index: usize,
   pub character: char,
 }
 
+/// Create a scanner, a custom version of peekable and enumerate iterator
+/// that can save info regarding to the current entry.
 pub struct Scanner<'a> {
   iterator: std::iter::Peekable<std::iter::Enumerate<std::str::Chars<'a>>>,
   current: CurrentEntry,
@@ -19,6 +24,8 @@ impl<'a> Scanner<'a> {
     }
   }
 
+  /// Calling `next()` advances the iterator to next entry and save
+  /// it into `current` field.
   pub fn next(&mut self) -> Option<(usize, char)> {
     let next = self.iterator.next();
     match next {
@@ -34,10 +41,12 @@ impl<'a> Scanner<'a> {
     }
   }
 
+  /// Get the next entry without advancing the scanner.
   pub fn peek(&mut self) -> Option<&(usize, char)> {
     self.iterator.peek()
   }
 
+  /// Return the current entry.
   pub fn current(&self) -> &CurrentEntry {
     &self.current
   }
