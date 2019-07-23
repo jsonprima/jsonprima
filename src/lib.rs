@@ -69,14 +69,17 @@ pub use error::ErrorType;
 /// // A valid JSON document.
 /// let text: &str = "[true, false]";
 /// let errors = jsonprima::validate(&text);
-/// println!("{:#?}", errors); // => []
+/// assert!(errors.is_empty()); // No errors, valid JSON document.
 /// ```
 ///
 /// ```rust
 /// // Invalid `true` root value in JSON document.
 /// let text: &str = "trua";
 /// let errors = jsonprima::validate(&text);
-/// println!("{:#?}", errors); // => [("E104", 0, 4)]
+///
+/// assert_eq!(errors.get(0).unwrap().err.code(), "E105");
+/// assert_eq!(errors.get(0).unwrap().index_start, 0);
+/// assert_eq!(errors.get(0).unwrap().index_end, 4);
 /// ```
 pub fn validate(code: &str) -> Vec<Error> {
   // Create a scanner to operate in the text representation of the JSON document.

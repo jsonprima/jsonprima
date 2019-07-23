@@ -131,7 +131,15 @@ impl ErrorType {
   /// **Examples**
   ///
   /// ```rust
-  /// println!("{}", jsonprima::ErrorType::E104.description()); // => "No more graphemes to parse."
+  /// assert_eq!(jsonprima::ErrorType::E104.description(), "No more graphemes to parse.");
+  /// ```
+  ///
+  /// ```rust
+  /// // Invalid `true` root value in JSON document.
+  /// let text: &str = "trua";
+  /// let errors = jsonprima::validate(&text);
+  /// let description = errors.get(0).unwrap().err.description();
+  /// assert_eq!(description, "Invalid character in literal name.");
   /// ```
   pub fn description(&self) -> &str {
     match self {
@@ -193,7 +201,15 @@ impl ErrorType {
   /// **Examples**
   ///
   /// ```rust
-  /// println!("{}", jsonprima::ErrorType::E104.code()); // => "E104"
+  /// assert_eq!(jsonprima::ErrorType::E104.code(), "E104");
+  /// ```
+  ///
+  /// ```rust
+  /// // Invalid `true` root value in JSON document.
+  /// let text: &str = "trua";
+  /// let errors = jsonprima::validate(&text);
+  /// let code = errors.get(0).unwrap().err.code();
+  /// assert_eq!(code, "E105");
   /// ```
   pub fn code(&self) -> &str {
     match self {
