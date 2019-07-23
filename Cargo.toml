@@ -24,10 +24,13 @@ repository = "jsonprima/jsonprima"
 branch = "master"
 
 [badges.maintenance]
-status = "experimental"
+status = "passively-maintained"
 
 [lib]
 name = "jsonprima"
 
 [[bin]]
 name = "jsonprima"
+
+[dependencies]
+clap = "2.33.0"
