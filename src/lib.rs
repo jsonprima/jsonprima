@@ -12,7 +12,6 @@ mod error;
 mod json;
 mod scanner;
 
-use error::Error;
 use json::general_tokens::*;
 use json::{StackTokens, JSON};
 use scanner::Scanner;
@@ -51,7 +50,7 @@ mod validate_name_separator;
 use validate_name_separator::validate_name_separator;
 
 // Public exports
-pub use error::ErrorType;
+pub use error::{Error, ErrorType};
 
 /// Validate a JSON document based on RFC 8259 latest standard.
 ///

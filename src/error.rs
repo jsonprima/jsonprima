@@ -280,4 +280,25 @@ impl Error {
       index_end,
     }
   }
+
+  /// Serialize the error into a JSON value.
+  ///
+  /// **Examples**
+  ///
+  /// ```rust
+  /// // Invalid `true` root value in JSON document.
+  /// let text: &str = "trua";
+  /// let errors = jsonprima::validate(&text);
+  /// let serialized: String = errors.get(0).unwrap().serialize();
+  /// assert_eq!(serialized, "{\"code\": \"E105\", \"description\": \"Invalid character in literal name.\", \"index_end\": 4, \"index_start\": 0}");
+  /// ```
+  pub fn serialize(&self) -> String {
+    format!(
+      "{{\"code\": \"{}\", \"description\": \"{}\", \"index_end\": {}, \"index_start\": {}}}",
+      self.err.code(),
+      self.err.description(),
+      self.index_end,
+      self.index_start
+    )
+  }
 }
