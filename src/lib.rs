@@ -28,7 +28,7 @@
 //!
 //! ```bash
 //! $ jsonprima -i "trua"
-//! "[{\"code\": \"E106\", \"description\": \"Invalid literal.\", \"index_end\": 2, \"index_start\": 1}]"
+//! "[{\"code\": \"E105\", \"description\": \"Invalid character in literal name.\", \"index_end\": 4, \"index_start\": 0}]"
 //! ```
 //!
 //! **Note:** This is a non-tolerant parser, expect that there will be at most one error in the returned array.
