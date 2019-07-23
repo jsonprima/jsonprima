@@ -1,3 +1,13 @@
+//! `jsonprima` is a RFC 8259 compliant JSON validator in Rust.
+//! This module comes as a Cargo library or CLI version.
+//!
+//! ## CLI Usage
+//! You can grab the [latest release](https://github.com/jsonprima/jsonprima/releases/latest) of the binary on GitHub.
+//! Validate inline code using  the `-i` option.
+//! ```bash
+//! jsonprima -i "[true, false]"
+//! ```
+
 mod error;
 mod json;
 mod scanner;
