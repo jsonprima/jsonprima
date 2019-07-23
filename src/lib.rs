@@ -45,7 +45,7 @@ pub use error::ErrorType;
 
 /// Validate a JSON document based on RFC 8259 latest standard.
 ///
-/// This function returns after catches one error, i.e. it is not error tolerant.
+/// This function returns when encounter an error, i.e. it is not error tolerant.
 ///
 /// **Notes**
 /// - There is no limit to the size of the provided text to validate.
@@ -69,25 +69,35 @@ pub use error::ErrorType;
 /// println!("{:#?}", errors); // => [("E104", 0, 4)]
 /// ```
 pub fn validate(code: &str) -> Vec<Error> {
+  // Create a scanner to operate in the text representation of the JSON document.
   let mut scanner = Scanner::new(code);
+
+  // Create a `JSON` instance to save information regarding to validation process.
   let mut json_document = JSON::new();
 
+  // Ignore BOM if present.
   if scanner
     .peek()
     .filter(|(_, first_character)| first_character == &'\u{feff}')
     .is_some()
   {
-    // Ignore byte order mark.
     scanner.next();
   }
 
-  // Iterate over all characters and return a Result if there is any error.
+  // Iterate over all characters of the JSON document, matching the token type
+  // of each character (begin-array, horizontal-tab, etc).
+  // We check the first character of a JSON value to determine
+  // what value to validate, i.e. string, number, literal name, etc.
+  //
+  // For instance if the current character is "t", we know that we have to
+  // validate for "true" JSON literal name. We pass the appropriate structures
+  //  (`scanner`, `json_document`) down to `validate_true` function which is responsible
+  // for the validation process. If the operation is successful, we return from the
+  // `validate_true` function and the next `scanner` entry is the first character
+  // after "true". In case of invalid JSON value, we return the error vector.
   while let Some((current_index, current_character)) = scanner.next() {
-    // Match the token type of the character (begin-array, horizontal-tab, etc).
-    // We check the first character of a JSON value to determine
-    // what value to validate, i.e. string, number, literal name, etc.
     match current_character {
-      // Space character is always valid in a JSON document.
+      // Insignificant whitespace is always valid in a JSON document.
       SPACE | NEW_LINE | CARRIAGE_RETURN | HORIZONTAL_TAB => continue,
 
       // Character `t` is the first character of the `true` literal name.
@@ -111,50 +121,67 @@ pub fn validate(code: &str) -> Vec<Error> {
         }
       }
 
-      // Parse JSON number.
+      // Parse the whole JSON number until a structural token or EOF.
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '-' => {
         if validate_number(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
-      // Parse JSON String
+      // Parse the whole JSON string until a structural token or EOF.
       QUOTATION_MARK => {
         if validate_string(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
+      // Check the validity of begin-array token, i.e. appropriate position,
+      // nesting level, etc.
+      // This operation checks only the begin-array character and returns here.
       BEGIN_ARRAY => {
         if validate_begin_array(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
+      // Check the validity of end-array token, i.e. appropriate position,
+      // nesting level, etc.
+      // This operation checks only the end-array character and returns here.
       END_ARRAY => {
         if validate_end_array(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
+      // Check the validity of name-separator token.
+      // This operation checks only the name-separator character and returns here.
       VALUE_SEPARATOR => {
         if validate_value_separator(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
+      // Check the validity of begin-object token, i.e. appropriate position,
+      // nesting level, etc.
+      // This operation checks only the begin-object character and returns here.
       BEGIN_OBJECT => {
         if validate_begin_object(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
+      // Check the validity of end-object token, i.e. appropriate position,
+      // nesting level, etc.
+      // This operation checks only the end-object character and returns here.
       END_OBJECT => {
         if validate_end_object(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
         }
       }
 
+      // Check the validity of name-separator token, i.e. appropriate position,
+      // nesting level, etc.
+      // This operation checks only the name-separator character and returns here.
       NAME_SEPARATOR => {
         if validate_name_separator(&mut json_document, &mut scanner).is_err() {
           return json_document.errors;
@@ -171,8 +198,7 @@ pub fn validate(code: &str) -> Vec<Error> {
     }
   }
 
-  // In case we have not parsed any JSON value,
-  // return empty JSON error.
+  // Prohibit empty JSON document.
   if json_document.last_parsed_token.is_none() {
     let last_parsed_index = scanner.current().index;
     // Empty JSON document.
@@ -180,7 +206,7 @@ pub fn validate(code: &str) -> Vec<Error> {
     json_document.errors.push(err);
   }
 
-  // Check if there are any json_document left in json_document.stack which denotes that some
+  // Check if there are any tokens left in `json_document.stack` which denotes that some
   // nested structure has not terminated properly.
   if let Some(token) = json_document.stack.pop() {
     match token {
@@ -207,5 +233,7 @@ pub fn validate(code: &str) -> Vec<Error> {
     }
   }
 
+  // In case there is any error, the resulted vector will contain
+  // an Error instance, else will be empty in case of successful validation.
   json_document.errors
 }
