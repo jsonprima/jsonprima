@@ -66,10 +66,10 @@ pub enum ParseTokens {
 // This help us identify if each nested array level contains a
 // valid set of begin-array/end-array tokens.
 //
-// StackTokens::NameSeparator help us identify valid object members.
+// `StackTokens::NameSeparator` help us identify valid object members.
 // For instance suppose that we have to parse the following JSON value:
 //   { "hello": "invalid": "world "}
-// After parsing successfully the member "hello": "invalid" the stack is:
+// After parsing successfully the member `"hello": "invalid"` the stack is:
 //   Stack = [StackTokens::BeginObject, StackTokens::NameSeparator]
 // In the next iteration we check the name-separator after "invalid"
 // with the last parsed token in the stack. We see that we have already
