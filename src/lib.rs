@@ -3,10 +3,35 @@
 //!
 //! ## CLI Usage
 //! You can grab the [latest release](https://github.com/jsonprima/jsonprima/releases/latest) of the binary on GitHub.
-//! Validate inline code using  the `-i` option.
+//!
+//! Pass the JSON document to validate as argument using  the `-i` option.
+//!
 //! ```bash
-//! jsonprima -i "[true, false]"
+//! $ jsonprima -i "[true, false]"
+//! []
 //! ```
+//!
+//! The returned value is an JSON array with the returned errors as described bellow:
+//!
+//! ```ts
+//! interface Error {
+//!   code: string,
+//!   description: string,
+//!   index_start: number,
+//!   index_end: number
+//! }
+//! ```
+//!
+//! In the above example the JSON document is valid, so the array does not contain any errors.
+//!
+//! Here is an example of a wrong JSON document:
+//!
+//! ```bash
+//! $ jsonprima -i "trua"
+//! "[{\"code\": \"E106\", \"description\": \"Invalid literal.\", \"index_end\": 2, \"index_start\": 1}]"
+//! ```
+//!
+//! **Note:** This is a non-tolerant parser, expect that there will be at most one error in the returned array.
 
 mod error;
 mod json;
