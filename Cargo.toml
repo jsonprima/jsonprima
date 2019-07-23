@@ -24,7 +24,7 @@ repository = "jsonprima/jsonprima"
 branch = "master"
 
 [badges.maintenance]
-status = "experimental"
+status = "passively-maintained"
 
 [lib]
 name = "jsonprima"
