@@ -293,12 +293,15 @@ impl Error {
   /// assert_eq!(serialized, "{\"code\": \"E105\", \"description\": \"Invalid character in literal name.\", \"index_end\": 4, \"index_start\": 0}");
   /// ```
   pub fn serialize(&self) -> String {
-    format!(
-      "{{\"code\": \"{}\", \"description\": \"{}\", \"index_end\": {}, \"index_start\": {}}}",
-      self.err.code(),
-      self.err.description(),
-      self.index_end,
-      self.index_start
-    )
+    let mut serialized = "{\"code\": \"".to_string();
+    serialized.push_str(self.err.code());
+    serialized.push_str("\", \"description\": \"");
+    serialized.push_str(self.err.description());
+    serialized.push_str("\", \"index_end\": ");
+    serialized.push_str(&self.index_end.to_string());
+    serialized.push_str(", \"index_start\": ");
+    serialized.push_str(&self.index_start.to_string());
+    serialized.push_str("}");
+    serialized
   }
 }
