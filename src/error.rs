@@ -1,7 +1,5 @@
 //! Error types
 
-// TODO: Add documentation examples to `description`, `code` and `new` functions.
-
 /// A list of all error variants used by this module.
 #[derive(Debug)]
 pub enum ErrorType {
@@ -53,82 +51,88 @@ pub enum ErrorType {
   // Invalid character found in Unicode escape sequence.
   E117,
 
-  // Invalid Unicode grapheme in JSON string.
+  /// Invalid Unicode grapheme in JSON string.
   E118,
 
-  // Invalid Unicode escape sequence in second surrogate pair.
+  /// Invalid Unicode escape sequence in second surrogate pair.
   E119,
 
-  // Unexpected comma at the start of JSON document.
+  /// Unexpected comma at the start of JSON document.
   E122,
 
-  // Unexpected comma after structural token.
+  /// Unexpected comma after structural token.
   E123,
 
-  // Invalid use of comma after document root value.
+  /// Invalid use of comma after document root value.
   E124,
 
-  // Illegal begin-array after JSON value.
+  /// Illegal begin-array after JSON value.
   E125,
 
-  // Illegal end-array. No begin-array match.
+  /// Illegal end-array. No begin-array match.
   E126,
 
-  // Unterminated array.
+  /// Unterminated array.
   E127,
 
-  // Unterminated object.
+  /// Unterminated object.
   E128,
 
-  // Illegal end-array after comma.
+  /// Illegal end-array after comma.
   E129,
 
-  // Illegal begin-object after JSON value.
+  /// Illegal begin-object after JSON value.
   E130,
 
-  // Illegal end-object. No begin-object match.
+  /// Illegal end-object. No begin-object match.
   E131,
 
-  // Illegal end-object after comma.
+  /// Illegal end-object after comma.
   E132,
 
-  // Illegal end-array after colon.
+  /// Illegal end-array after colon.
   E133,
 
-  // Illegal end-object after colon.
+  /// Illegal end-object after colon.
   E134,
 
-  // Invalid object member. Member value does not exist.
+  /// Invalid object member. Member value does not exist.
   E135,
 
-  // Invalid use of colon.
+  /// Invalid use of colon.
   E136,
 
-  // Invalid use of number as object name.
+  /// Invalid use of number as object name.
   E137,
 
   // Invalid use of true as object name.
   E138,
 
-  // Invalid use of false as object name.
+  /// Invalid use of false as object name.
   E139,
 
   // Invalid use of null as object name.
   E140,
 
-  // Invalid object member
+  /// Invalid object member
   E141,
 
-  // Invalid use of array as object name.
+  /// Invalid use of array as object name.
   E142,
 
-  // Invalid use of object as object name.
+  /// Invalid use of object as object name.
   E143,
 }
 
 /// Used to represent the various error variants in this module.
 impl ErrorType {
   /// Return the error description.
+  ///
+  /// **Examples**
+  ///
+  /// ```rust
+  /// println!("{}", jsonprima::ErrorType::E104.description()); // => "No more graphemes to parse."
+  /// ```
   pub fn description(&self) -> &str {
     match self {
       ErrorType::E100 => "Empty JSON document.",
@@ -185,6 +189,12 @@ impl ErrorType {
   }
 
   /// Return the error code.
+  ///
+  /// **Examples**
+  ///
+  /// ```rust
+  /// println!("{}", jsonprima::ErrorType::E104.code()); // => "E104"
+  /// ```
   pub fn code(&self) -> &str {
     match self {
       ErrorType::E100 => "E100",
