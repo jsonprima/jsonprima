@@ -63,7 +63,6 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
       // No more characters to parse.
       let err = Error::new(ErrorType::E104, index_start, scanner.current().index + 1);
       json_document.errors.push(err);
-      ()
     })?;
 
     // End of string reached. We have successfully parse the JSON string.
@@ -83,7 +82,6 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
           // No more characters to parse.
           let err = Error::new(ErrorType::E104, index_start, scanner.current().index + 1);
           json_document.errors.push(err);
-          ()
         })?;
 
         match scanner.current().character {
@@ -125,7 +123,6 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
                   let err =
                     Error::new(ErrorType::E119, index_start, scanner.current().index + 1);
                   json_document.errors.push(err);
-                  ()
                 })?;
 
                 if scanner.current().character != '\\' {
@@ -141,7 +138,6 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
                   let err =
                     Error::new(ErrorType::E119, index_start, scanner.current().index + 1);
                   json_document.errors.push(err);
-                  ()
                 })?;
 
                 if scanner.current().character != 'u' {
@@ -166,7 +162,6 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
                   let err =
                     Error::new(ErrorType::E118, index_start, scanner.current().index + 1);
                   json_document.errors.push(err);
-                  ()
                 })?;
               }
             }
