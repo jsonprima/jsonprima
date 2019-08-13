@@ -117,6 +117,13 @@ pub struct JSON {
   // Stack of current nesting level tokens.
   pub stack: Vec<StackTokens>,
 
+  // Track the object names of the current object level.
+  // This structure operates together with the `stack` vector
+  // assigning each element of `object_member_names` to a
+  // distinct element on `stack` when the `stack` element is
+  // `StackTokens::BeginObject`.
+  pub object_member_names: Vec<Vec<String>>,
+
   // Check if a valid member exist in an object.
   pub object_has_valid_member: bool,
 
@@ -134,6 +141,7 @@ impl JSON {
       last_parsed_token: None,
       root_value_parsed: false,
       stack: Vec::new(),
+      object_member_names: Vec::new(),
       object_has_valid_member: false,
       errors: Vec::new(),
     }

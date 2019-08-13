@@ -25,6 +25,7 @@ pub fn validate_begin_object(
               json_document.object_has_valid_member = true;
               json_document.last_parsed_token = Some(ParseTokens::BeginObject);
               json_document.stack.push(StackTokens::BeginObject);
+              json_document.object_member_names.push(Vec::new());
               Ok(())
             }
 
@@ -39,6 +40,7 @@ pub fn validate_begin_object(
         json_document.object_has_valid_member = true;
         json_document.last_parsed_token = Some(ParseTokens::BeginObject);
         json_document.stack.push(StackTokens::BeginObject);
+        json_document.object_member_names.push(Vec::new());
         Ok(())
       }
 
@@ -47,6 +49,7 @@ pub fn validate_begin_object(
         json_document.last_parsed_token = Some(ParseTokens::BeginObject);
         json_document.stack.pop();
         json_document.stack.push(StackTokens::BeginObject);
+        json_document.object_member_names.push(Vec::new());
         Ok(())
       }
 
@@ -64,6 +67,7 @@ pub fn validate_begin_object(
       json_document.object_has_valid_member = true;
       json_document.last_parsed_token = Some(ParseTokens::BeginObject);
       json_document.stack.push(StackTokens::BeginObject);
+      json_document.object_member_names.push(Vec::new());
       json_document.root_value_parsed = true;
       Ok(())
     }

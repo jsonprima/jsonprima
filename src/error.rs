@@ -122,6 +122,9 @@ pub enum ErrorType {
 
   /// Invalid use of object as object name.
   E143,
+
+  /// Duplicate object name.
+  E144,
 }
 
 /// Used to represent the various error variants in this module.
@@ -193,6 +196,7 @@ impl ErrorType {
       ErrorType::E141 => "Invalid object member.",
       ErrorType::E142 => "Invalid use of array as object name.",
       ErrorType::E143 => "Invalid use of object as object name.",
+      ErrorType::E144 => "Duplicate object name.",
     }
   }
 
@@ -253,6 +257,7 @@ impl ErrorType {
       ErrorType::E141 => "E141",
       ErrorType::E142 => "E142",
       ErrorType::E143 => "E143",
+      ErrorType::E144 => "E144",
     }
   }
 }

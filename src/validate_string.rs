@@ -42,7 +42,10 @@ fn parse_escape_sequence(
   Ok(uffff)
 }
 
-fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
+fn validate(
+  json_document: &mut JSON,
+  scanner: &mut Scanner,
+) -> Result<(usize, String), ()> {
   // Save the position of the first character.
   // This will help us set a range that will highlight the whole incorrect value
   // in case of an error.
@@ -57,6 +60,9 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
   // ```
   let index_start = scanner.current().index;
 
+  // The parsed string value which will be returned by this function.
+  let mut string_value: Vec<char> = Vec::new();
+
   // Parse all characters as string values until quotation mark.
   loop {
     scanner.next().ok_or_else(|| {
@@ -68,7 +74,7 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
     // End of string reached. We have successfully parse the JSON string.
     if scanner.current().character == '"' {
       json_document.last_parsed_token = Some(ParseTokens::String);
-      return Ok(());
+      return Ok((index_start, string_value.into_iter().collect::<String>()));
     }
 
     // In case the character is not closing quotation mark and exists,
@@ -86,7 +92,45 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
 
         match scanner.current().character {
           // Valid escape character sequence.
-          '/' | '\\' | '"' | 'b' | 'f' | 'n' | 'r' | 't' => continue,
+          '/' => {
+            string_value.push('/');
+            continue;
+          }
+
+          '\\' => {
+            string_value.push('\\');
+            continue;
+          }
+
+          '"' => {
+            string_value.push('"');
+            continue;
+          }
+
+          'b' => {
+            string_value.push('\x08');
+            continue;
+          }
+
+          'f' => {
+            string_value.push('\x0C');
+            continue;
+          }
+
+          'n' => {
+            string_value.push('\n');
+            continue;
+          }
+
+          'r' => {
+            string_value.push('\r');
+            continue;
+          }
+
+          't' => {
+            string_value.push('\t');
+            continue;
+          }
 
           // Start of Unicode escape sequence.
           'u' => {
@@ -109,7 +153,10 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
             match std::char::from_u32(high_surrogate) {
               // We successfully parsed the Unicode
               // escaped sequence, no surrogate pair.
-              Some(_) => continue,
+              Some(val) => {
+                string_value.push(val);
+                continue;
+              }
 
               None => {
                 // We couldn't parse the Unicode escape
@@ -157,12 +204,24 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
                 // Borrowed from https://stackoverflow.com/a/23920015
                 let unicode_value = (high_surrogate << 10) + low_surrogate - 0x35f_dc00;
 
-                std::char::from_u32(unicode_value).ok_or_else(|| {
-                  // Invalid Unicode character in JSON string.
-                  let err =
-                    Error::new(ErrorType::E118, index_start, scanner.current().index + 1);
-                  json_document.errors.push(err);
-                })?;
+                match std::char::from_u32(unicode_value) {
+                  Some(val) => {
+                    string_value.push(val);
+                    continue;
+                  }
+
+                  None => {
+                    // Invalid Unicode character in JSON string.
+                    let err = Error::new(
+                      ErrorType::E118,
+                      index_start,
+                      scanner.current().index + 1,
+                    );
+                    json_document.errors.push(err);
+
+                    return Err(());
+                  }
+                }
               }
             }
           }
@@ -196,7 +255,10 @@ fn validate(json_document: &mut JSON, scanner: &mut Scanner) -> Result<(), ()> {
       }
 
       // Valid non escape or control character.
-      _ => continue,
+      val => {
+        string_value.push(val);
+        continue;
+      }
     }
   }
 }
@@ -215,18 +277,54 @@ pub fn validate_string(
           StackTokens::NameSeparator => {
             json_document.stack.pop();
             json_document.object_has_valid_member = true;
-            validate(json_document, scanner)
+
+            match validate(json_document, scanner) {
+              Ok(_) => Ok(()),
+              Err(_) => Err(()),
+            }
           }
 
           StackTokens::BeginObject => {
             json_document.object_has_valid_member = false;
-            validate(json_document, scanner)
+
+            match validate(json_document, scanner) {
+              Ok((index_start, val)) => {
+                if json_document
+                  .object_member_names
+                  .last_mut()
+                  .unwrap()
+                  .contains(&val)
+                {
+                  let last_parsed_index = scanner.current().index;
+                  let err =
+                    Error::new(ErrorType::E144, index_start, last_parsed_index + 1);
+                  json_document.errors.push(err);
+
+                  Err(())
+                } else {
+                  json_document
+                    .object_member_names
+                    .last_mut()
+                    .unwrap()
+                    .push(val);
+                  Ok(())
+                }
+              }
+
+              Err(_) => Err(()),
+            }
           }
 
-          StackTokens::BeginArray => validate(json_document, scanner),
+          StackTokens::BeginArray => match validate(json_document, scanner) {
+            Ok(_) => Ok(()),
+            Err(_) => Err(()),
+          },
         },
 
-        None => validate(json_document, scanner),
+        None => match validate(json_document, scanner) {
+          Ok(_) => Ok(()),
+          Err(_) => Err(()),
+        },
       },
 
       // Illegal string after structural token. Expected comma or colon.
@@ -241,7 +339,11 @@ pub fn validate_string(
 
     None => {
       json_document.root_value_parsed = true;
-      validate(json_document, scanner)
+
+      match validate(json_document, scanner) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(()),
+      }
     }
   }
 }

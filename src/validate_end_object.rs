@@ -22,6 +22,7 @@ pub fn validate_end_object(
               if json_document.object_has_valid_member {
                 json_document.last_parsed_token = Some(ParseTokens::EndObject);
                 json_document.stack.pop();
+                json_document.object_member_names.pop();
                 Ok(())
               } else {
                 // Invalid object member. Member value does not exist.
